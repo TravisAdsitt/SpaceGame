@@ -22,5 +22,8 @@ public class Player {
 		fleets.add(new Fleet());
 	}
 	
+	public String[] getFleetArray(int index){
+		return fleets.get(index).getFleetArray();
+	}
 	
 }

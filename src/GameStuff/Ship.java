@@ -1,5 +1,6 @@
 package GameStuff;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 public class Ship {
@@ -8,8 +9,9 @@ public class Ship {
 	private final int DEFAULT_MAX_OX = 10000, DEFAULT_MAX_HY = 100000, DEFAULT_MAX_OR = 1000;
 	private final int DEFAULT_MINEPOW = 20, DEFAULT_VACPOW = 20;
 	private final int DEFAULT_HPS = 1000,DEFAULT_HPT = 100, DEFAULT_OPT = 10;//HPS = Hydrogen per sector; OPT/HPT = Oxygen/Hydrogen per tick
-	private final double DEFAULT_SPT = .1;
-	private int oxygen, hydrogen, ore, minePow, vacPow, level, coorX, coorY, destX, destY;
+	private final double DEFAULT_SHIP_SPEED = .1; //Sector per Tick
+	private int oxygen, hydrogen, ore, minePow, vacPow, level;
+	private double  coorX, coorY;
 	private boolean isIdle;
 	
 	/**
@@ -23,8 +25,8 @@ public class Ship {
 		isIdle = true;
 		currentCommand = "none";
 		vesselName = name;
-		coorX = destX = x;
-		coorY = destY = y;
+		coorX = x;
+		coorY = y;
 		
 		commandList = new ArrayList<Object[]>();
 		
@@ -68,11 +70,29 @@ public class Ship {
 		return ret;
 	}
 	/**
+	 * Given coordinates this will add the command to move to the specified coordinates.
+	 * @param x coordinate
+	 * @param y coordinate
+	 * @return announcements for the calling method
+	 */
+	public String moveShip(int x, int y){
+		String ret = "Command Added!";
+		
+		int[] coordinates = new int[2];
+		
+		coordinates[0] = x;
+		coordinates[1] = y;
+		
+		addCommand("Move",coordinates,DEFAULT_SHIP_SPEED*level);
+		
+		return ret;
+	}
+	/**
 	 * Perform the current command on the list.
 	 */
 	public void performCommand(){
 		Planet p;
-		int amount, obtained;
+		double amount, obtained;
 		
 		if(commandList.size()>0){
 			Object[] currCommand = commandList.get(0);
@@ -90,6 +110,11 @@ public class Ship {
 				currCommand[2] = amount - obtained;
 				
 				obtained = 0;
+				
+				if(amount==0){
+					commandList.remove(currCommand);
+				}
+				
 				break;
 			case "Vacuum":
 				p = (Planet) currCommand[1];
@@ -101,8 +126,23 @@ public class Ship {
 				currCommand[2] = amount - obtained;
 				
 				obtained = 0;
-				break;
 				
+				if(amount==0){
+					commandList.remove(currCommand);
+				}
+				
+				break;
+			case "Move":
+				int x = ((int[])currCommand[1])[0], y = ((int[])currCommand[1])[1];
+				amount = (double)currCommand[2];
+				
+				coorX += coorX<x?amount:coorX>x?-amount:0;
+				coorY += coorY<y?amount:coorY>y?-amount:0;
+				
+				if(coorX==x&&coorY==y){
+					commandList.remove(currCommand);
+				}
+				break;
 			}
 		}
 	}
@@ -113,7 +153,7 @@ public class Ship {
 	 * @param obj Object performing operation on
 	 * @param amount Amount to perform
 	 */
-	public void addCommand(String com, Object obj, int amount){
+	public void addCommand(String com, Object obj, double amount){
 		Object[] command = new Object[3];
 		
 		command[0] = com;
@@ -121,6 +161,14 @@ public class Ship {
 		command[2] = amount;
 		
 		commandList.add(command);
+	}
+	
+	public String toString(){
+		String ret = "";
+		
+		ret = String.format("Ship [id = %5s, oxy = %5s, hyd = %5s, ore = %5s", vesselName, oxygen, hydrogen, ore);
+		
+		return ret;
 	}
 	
 }

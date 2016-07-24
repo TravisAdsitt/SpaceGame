@@ -57,4 +57,14 @@ public class Fleet {
 	public Ship getShip(int index){
 		return ships.get(index);
 	}
+	
+	public String[] getFleetArray(){
+		String[] ret = new String[ships.size()];
+		
+		for(int i = 0; i<ships.size() ;i++){
+			ret[i] = ships.get(i).toString();
+		}
+		
+		return ret;
+	}
 }
