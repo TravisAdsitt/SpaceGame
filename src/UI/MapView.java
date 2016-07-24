@@ -1,6 +1,7 @@
 package UI;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,23 +26,17 @@ public class MapView extends JPanel{
 		
 		ran = new Random();
 		
-		setSize(INI_WIDTH, INI_HEIGHT);
-		
 		blockW = getWidth()/(mapData.length);
 		blockH = getHeight()/(mapData.length);
 		
-		hX = 50;
-		hY = 50;
+		setPreferredSize(new Dimension(INI_WIDTH-blockW*2, INI_HEIGHT-blockH*2));
+		
+		hX = -1;
+		hY = -1;
 		
 		this.addMouseListener(new MouseMapListener());
 		
 		
-	}
-	public int getHeight(){
-		return INI_HEIGHT-blockH;
-	}
-	public int getWidth(){
-		return INI_WIDTH-blockW;
 	}
 	/**
 	 * Get the highlighted squares x value.
