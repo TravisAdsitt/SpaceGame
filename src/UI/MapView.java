@@ -20,11 +20,13 @@ public class MapView extends JPanel{
 	private Sector[][] mapData;
 	private Random ran;
 	private int hX,hY;
+	private boolean rightClicked;
 	
 	public MapView(Sector[][] mapData){
 		this.mapData = mapData;
 		
 		ran = new Random();
+		rightClicked = false;
 		
 		mapW = BLOCK_SIDE*(mapData[0].length);
 		mapH = BLOCK_SIDE*(mapData[0].length);		
@@ -38,6 +40,7 @@ public class MapView extends JPanel{
 		this.addMouseListener(new MouseMapListener());
 		
 	}
+	
 	/**
 	 * Get the highlighted squares x value.
 	 * 
@@ -55,6 +58,23 @@ public class MapView extends JPanel{
 		return hY;
 	}
 	
+	public int[] getComCoord(){
+		int[] ret = new int[2];
+		
+		if(rightClicked){
+			ret[0] = getHX();
+			ret[1] = getHY();
+		}else{
+			ret[0] = -1;
+			ret[1] = -1;
+		}
+		
+		
+		hX = hY = -1;
+		rightClicked = false;
+		
+		return ret;
+	}
 	/**
 	 * Draws the stars and 
 	 */
@@ -100,10 +120,14 @@ public class MapView extends JPanel{
 		public void mouseClicked(MouseEvent arg0) {
 			hX = (int) arg0.getPoint().getX()/BLOCK_SIDE;
 			hY = (int) arg0.getPoint().getY()/BLOCK_SIDE;
-			
-			System.out.println(hX + " : " + hY);
-			
+
 			//System.out.println(mapData[hX][hY].getNumSolarSystem());
+			
+			switch(arg0.getButton()){
+			case 3:
+				rightClicked = true;
+				break;
+			}
 			
 			repaint();
 		}
