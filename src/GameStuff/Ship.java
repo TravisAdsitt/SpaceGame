@@ -8,7 +8,7 @@ public class Ship {
 	private ArrayList<Object[]> commandList;
 	private final int DEFAULT_MAX_OX = 10000, DEFAULT_MAX_HY = 100000, DEFAULT_MAX_OR = 1000;
 	private final int DEFAULT_MINEPOW = 20, DEFAULT_VACPOW = 20;
-	private final int DEFAULT_HPS = 1000,DEFAULT_HPT = 100, DEFAULT_OPT = 10;//HPS = Hydrogen per sector; OPT/HPT = Oxygen/Hydrogen per tick
+	private final int DEFAULT_HPS = 1000,DEFAULT_HPT = 10, DEFAULT_OPT = 1;//HPS = Hydrogen per sector; OPT/HPT = Oxygen/Hydrogen per tick
 	private final double DEFAULT_SHIP_SPEED = .1; //Sector per Tick
 	private int oxygen, hydrogen, ore, minePow, vacPow, level;
 	private double  coorX, coorY;
@@ -144,10 +144,10 @@ public class Ship {
 				int x = ((int[])currCommand[1])[0], y = ((int[])currCommand[1])[1];
 				amount = (double)currCommand[2];
 				
-				coorX += coorX<x?amount:coorX>x?-amount:0;
-				coorY += coorY<y?amount:coorY>y?-amount:0;
+				coorX += (int)coorX<x?amount:(int)coorX>x?-amount:0;
+				coorY += (int)coorY<y?amount:(int)coorY>y?-amount:0;
 				
-				if(coorX==x&&coorY==y){
+				if((int)coorX==x&&(int)coorY==y){
 					commandList.remove(currCommand);
 				}
 				break;

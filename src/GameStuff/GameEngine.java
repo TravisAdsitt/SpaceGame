@@ -3,7 +3,15 @@ package GameStuff;
 import javax.swing.JFrame;
 
 import UI.GUI;
-
+/**
+ * Manages the playing of the game.
+ * 
+ * TODO: implement the ability to read game modes from a file.
+ * 
+ * 
+ * @author Travis Adsitt
+ *
+ */
 public class GameEngine {
 	private static Player player;
 	private static Universe universe;
