@@ -15,8 +15,8 @@ import GameStuff.Sector;
 
 public class MapView extends JPanel{
 
-	private final int INI_HEIGHT = 600, INI_WIDTH = 800;
-	private int blockW, blockH;
+	private final int BLOCK_SIDE = 7;
+	private int mapW, mapH;
 	private Sector[][] mapData;
 	private Random ran;
 	private int hX,hY;
@@ -26,16 +26,16 @@ public class MapView extends JPanel{
 		
 		ran = new Random();
 		
-		blockW = getWidth()/(mapData.length);
-		blockH = getHeight()/(mapData.length);
+		mapW = BLOCK_SIDE*(mapData[0].length);
+		mapH = BLOCK_SIDE*(mapData[0].length);		
 		
-		setPreferredSize(new Dimension(INI_WIDTH-blockW*2, INI_HEIGHT-blockH*2));
+		setPreferredSize(new Dimension(mapW, mapH));
+		setDoubleBuffered(true);
 		
 		hX = -1;
 		hY = -1;
 		
 		this.addMouseListener(new MouseMapListener());
-		
 		
 	}
 	/**
@@ -60,33 +60,33 @@ public class MapView extends JPanel{
 	 */
 	public void paintComponent(Graphics g){
 		
-		for(int x = 0 ; x<blockW*(mapData.length-1) ; x+=blockW){
-			for(int y = 0 ; y<blockH*(mapData.length-1) ; y+=blockH){
+		for(int x = 0 ; x<mapW ; x+=BLOCK_SIDE){
+			for(int y = 0 ; y<mapH ; y+=BLOCK_SIDE){
 				
 				Random sectorRan = new Random(Integer.parseInt(x+""+y));
 				
-				int numStars = mapData[x/blockW][y/blockH].getNumSolarSystem();
+				int numStars = mapData[x/BLOCK_SIDE][y/BLOCK_SIDE].getNumSolarSystem();
 				
 				g.setColor(Color.black);
 				
-				g.fillRect(x, y, blockW, blockH);
+				g.fillRect(x, y, BLOCK_SIDE, BLOCK_SIDE);
 				
 				g.setColor(Color.white);
 				
 				
 				
 				for(int i = 0; i<numStars ; i++){
-					int sX = sectorRan.nextInt(blockW) + x,
-							sY = sectorRan.nextInt(blockH) + y;
+					int sX = sectorRan.nextInt(BLOCK_SIDE) + x,
+							sY = sectorRan.nextInt(BLOCK_SIDE) + y;
 					
 					g.drawRect(sX, sY, 1, 1);
 					
 				}
 				
-				if(x/blockW == hX && y/blockH == hY){
+				if(x/BLOCK_SIDE == hX && y/BLOCK_SIDE == hY){
 					g.setColor(new Color(255,255,0,175));
 					
-					g.fillRect(x, y, blockW, blockH);
+					g.fillRect(x, y, BLOCK_SIDE, BLOCK_SIDE);
 					
 				}
 				
@@ -98,10 +98,10 @@ public class MapView extends JPanel{
 	private class MouseMapListener implements MouseListener{
 
 		public void mouseClicked(MouseEvent arg0) {
-			hX = (int) arg0.getPoint().getX()/blockW;
-			hY = (int) arg0.getPoint().getY()/blockH;
+			hX = (int) arg0.getPoint().getX()/BLOCK_SIDE;
+			hY = (int) arg0.getPoint().getY()/BLOCK_SIDE;
 			
-			//System.out.println(hX + " : " + hY);
+			System.out.println(hX + " : " + hY);
 			
 			//System.out.println(mapData[hX][hY].getNumSolarSystem());
 			

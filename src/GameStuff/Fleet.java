@@ -58,6 +58,11 @@ public class Fleet {
 		return ships.get(index);
 	}
 	
+	public void update(){
+		for(int i = 0; i<ships.size() ;i++){
+			ships.get(i).update();
+		}
+	}
 	public String[] getFleetArray(){
 		String[] ret = new String[ships.size()];
 		

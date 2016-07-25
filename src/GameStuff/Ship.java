@@ -33,7 +33,15 @@ public class Ship {
 	}
 	
 	public void update(){
-		//TODO subtract OPT and HPT, if moving subtract hydrogen
+		hydrogen -= DEFAULT_HPT/level;
+		oxygen -= DEFAULT_OPT/level;
+		
+		int tempX = (int) coorX, tempY = (int) coorY;
+		
+		performCommand();
+		
+		hydrogen -= ((((int)coorX)-tempX)+(((int)coorY)-tempY))==0?0:(DEFAULT_HPS/level);
+		
 	}
 	/**
 	 * Given a planet and the amount to mine this method creates a command for the mining operation.
@@ -166,7 +174,7 @@ public class Ship {
 	public String toString(){
 		String ret = "";
 		
-		ret = String.format("Ship [id = %5s, oxy = %5s, hyd = %5s, ore = %5s", vesselName, oxygen, hydrogen, ore);
+		ret = String.format("Ship [id = %5s, oxy = %5s, hyd = %5s, ore = %5s, sector = %5s, action = %7s]", vesselName, oxygen, hydrogen, ore, "S" +(int)coorX+(int)coorY, commandList.size()>0?(String)commandList.get(0)[0]:"Idle");
 		
 		return ret;
 	}
