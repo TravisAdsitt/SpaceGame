@@ -31,7 +31,10 @@ public class Ship {
 		commandList = new ArrayList<Object[]>();
 		
 	}
-	
+	/**
+	 * Updates hydrogen and oxygen values if we are moving or if we are just sitting.
+	 * 
+	 */
 	public void update(){
 		hydrogen -= DEFAULT_HPT/level;
 		oxygen -= DEFAULT_OPT/level;
@@ -96,7 +99,7 @@ public class Ship {
 		return ret;
 	}
 	/**
-	 * Perform the current command on the list.
+	 * Perform the current command on the list if we have hydrogen otherwise shutdown.
 	 */
 	public void performCommand(){
 		Planet p;
@@ -169,6 +172,22 @@ public class Ship {
 		command[2] = amount;
 		
 		commandList.add(command);
+	}
+	/**
+	 * To get the x coordinate in integer form
+	 * 
+	 * @return int of x coordinate
+	 */
+	public int getX(){
+		return (int) coorX;
+	}
+	/**
+	 * To get the y coordinate in integer form
+	 * 
+	 * @return int of y coordinate
+	 */
+	public int getY(){
+		return (int) coorY;
 	}
 	
 	public String toString(){

@@ -118,4 +118,26 @@ public class Sector {
 	public void addObjectToSector(Object object){
 		sectorObjects.add(object);
 	}
+	/**
+	 * Getting sector objects for the lists on the GUI
+	 * 
+	 * @return string array for a list
+	 */
+	public String[] getSectorObjectStringArray(){
+		String[] ret = new String[sectorObjects.size()+sectorSolarSystems.size()];
+		
+		int index = 0;
+		
+		for(SolarSystem s : sectorSolarSystems){
+			ret[index] = s.toString();
+			index++;
+		}
+		
+		for(Object o : sectorObjects){
+			ret[index] = o.toString();
+			index++;
+		}
+		
+		return ret;
+	}
 }

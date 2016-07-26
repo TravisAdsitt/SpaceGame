@@ -24,8 +24,20 @@ public class Universe {
 		System.out.println("Num Solar: " + numSolarSystem + " Num Planet: " + numPlanet);
 	}
 	
+	
+	
+	/**
+	 * Gets the data pertinent for the map
+	 * 
+	 * @return sector information for map data
+	 */
 	public Sector[][] getUniverseData(){
 		return universe;
+	}
+	public String[] getSectorObjectArray(int x, int y){
+		
+		return universe[x][y].getSectorObjectStringArray();
+		
 	}
 	/**
 	 * Initializes the universe to the gridsize specified.

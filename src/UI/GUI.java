@@ -16,7 +16,7 @@ import GameStuff.Universe;
 public class GUI extends JPanel{
 	private MapView map;
 	private Universe universe;
-	private JList<String> shipList;
+	private JList<String> shipList, sectorObjectList;
 	private ArrayList<Fleet> fleets;
 	
 	public GUI(Universe uni, Object[] playerData){
@@ -26,13 +26,22 @@ public class GUI extends JPanel{
 		
 		fleets = (ArrayList<Fleet>) playerData[0];
 		
-		DefaultListModel<String> list = new DefaultListModel<String>();
+		DefaultListModel<String> ships = new DefaultListModel<String>();
+		DefaultListModel<String> objects = new DefaultListModel<String>();
 		
 		for(String i : fleets.get(0).getFleetArray()){
-			list.addElement(i);
+			ships.addElement(i);
 		}
 		
-		shipList = new JList<String>(list);
+		shipList = new JList<String>(ships);
+		shipList.setSelectedIndex(0);
+		
+		for(String i : universe.getSectorObjectArray(fleets.get(0).getShip(shipList.getSelectedIndex()).getX(), fleets.get(0).getShip(shipList.getSelectedIndex()).getY())){
+			objects.addElement(i);
+		}
+		
+		sectorObjectList = new JList<String>(objects);
+		
 		
 		
 		
@@ -40,6 +49,7 @@ public class GUI extends JPanel{
 		
 		add(map);
 		add(shipList);
+		add(sectorObjectList);
 		
 		
 		
@@ -56,6 +66,18 @@ public class GUI extends JPanel{
 		shipList.setModel(list);
 		shipList.setSelectedIndex(tempIndex);
 		
+		//==========Sector List Update Section=========
+		DefaultListModel<String> objects = new DefaultListModel<String>();
+		
+		for(String i : universe.getSectorObjectArray(fleets.get(0).getShip(shipList.getSelectedIndex()).getX(), fleets.get(0).getShip(shipList.getSelectedIndex()).getY())){
+			objects.addElement(i);
+		}
+		tempIndex = sectorObjectList.getSelectedIndex();
+		
+		sectorObjectList.setModel(objects);;
+		
+		sectorObjectList.setSelectedIndex(tempIndex);
+		
 		//==========Ship Command Checks and Sends======
 		int[] comCoor = map.getComCoord();
 		
@@ -66,6 +88,8 @@ public class GUI extends JPanel{
 			shipCom.moveShip(comCoor[0], comCoor[1]);
 			
 		}
+		
+		
 		
 	}
 	
