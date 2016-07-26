@@ -13,6 +13,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 import GameStuff.Sector;
+import GameStuff.Ship;
 /**
  * This is to handle the drawing of the map and the highlighted squares.
  * 
@@ -29,11 +30,13 @@ public class MapView extends JPanel{
 	private Sector[][] mapData;
 	private Random ran;
 	private int hX,hY;
+	private ArrayList<Ship> ships;
 	private ArrayList<int[]> hCoor;
 	private boolean rightClicked;
 	
-	public MapView(Sector[][] mapData){
+	public MapView(Sector[][] mapData, ArrayList<Ship> ships){
 		this.mapData = mapData;
+		this.ships = ships;
 		
 		hCoor = new ArrayList<int[]>();
 		
@@ -90,7 +93,10 @@ public class MapView extends JPanel{
 		
 		return ret;
 	}
-	public void refreshHighlights(){
+	/**
+	 * Used to refresh the highlighted squares on the map
+	 */
+	public synchronized void refreshHighlights(){
 		hCoor.clear();
 		
 		int[] coor = new int[3]; 
@@ -101,13 +107,31 @@ public class MapView extends JPanel{
 		
 		hCoor.add(coor);
 		
+		for(Ship s : ships){
+			int[] sH = new int[3];
+			
+			sH[0] = s.getX();
+			sH[1] = s.getY();
+			sH[2] = 1;
+			
+			hCoor.add(sH);
+		}
+		
+		
+	}
+	public void update(ArrayList<Ship> ships){
+		this.ships = ships;
+		
+		refreshHighlights();
+		repaint();
 		
 	}
 	/**
 	 * Draws the stars and highlights
 	 */
 	public void paintComponent(Graphics g){
-		refreshHighlights();
+		
+		
 		for(int x = 0 ; x<mapW ; x+=BLOCK_SIDE){
 			for(int y = 0 ; y<mapH ; y+=BLOCK_SIDE){
 				
@@ -133,11 +157,13 @@ public class MapView extends JPanel{
 				for(int[] i : hCoor){
 					switch(i[2]){
 					case 0:
-						g.setColor(new Color(255,255,0,100));
+						g.setColor(new Color(200,200,0,100));
 						g.fillRect(i[0]*BLOCK_SIDE, i[1]*BLOCK_SIDE, BLOCK_SIDE, BLOCK_SIDE);
 						break;
 					case 1:
-						
+						g.setColor(new Color(0,200,0,100));
+						g.fillRect(i[0]*BLOCK_SIDE, i[1]*BLOCK_SIDE, BLOCK_SIDE, BLOCK_SIDE);
+						break;
 					}
 				}
 

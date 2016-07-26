@@ -16,11 +16,15 @@ import javax.swing.event.ListSelectionListener;
 
 import GameStuff.Fleet;
 import GameStuff.GameObject;
+import GameStuff.Planet;
 import GameStuff.Ship;
 import GameStuff.SolarSystem;
+import GameStuff.Sun;
 import GameStuff.Universe;
 /**
  * This is used for the handling of all GUI stuff... At this moment it does a lot of game enginy stuff.
+ * 
+ * TODO: I think that we need to add states to the game... might require some rewritting :(
  * 
  * @author Travis Adsitt
  *
@@ -32,18 +36,22 @@ public class GUI extends JPanel{
 	private ArrayList<Fleet> fleets;
 	private ArrayList<GameObject> listObjects;
 	private boolean systemSelected;
+	private JLabel announcements;
+	private Ship selectedShip;
 	
 	public GUI(Universe uni, Object[] playerData){
 		systemSelected = false;
-		universe = uni;
+		universe = uni; 
 		listObjects = new ArrayList<GameObject>();
 		
+		announcements = new JLabel();
+		announcements.setPreferredSize(new Dimension(500,100));
 		JLabel shipListLabel = new JLabel("Ships", SwingConstants.CENTER);
 		JLabel objectSectorListLabel = new JLabel("Objects", SwingConstants.CENTER);
 		
-		map = new MapView(universe.getUniverseData());
-		
 		fleets = (ArrayList<Fleet>) playerData[0];
+		
+		map = new MapView(universe.getUniverseData(),fleets.get(0).getFleet());
 		
 		DefaultListModel<String> ships = new DefaultListModel<String>();
 		DefaultListModel<String> objects = new DefaultListModel<String>();
@@ -76,6 +84,7 @@ public class GUI extends JPanel{
 		west.setLayout(new BoxLayout(west,BoxLayout.Y_AXIS));
 		
 		west.add(map);
+		east.add(announcements);
 		east.add(shipListLabel);
 		east.add(shipList);
 		east.add(objectSectorListLabel);
@@ -86,7 +95,14 @@ public class GUI extends JPanel{
 		
 		
 	}
+	/**
+	 * Used for updating and checking for ship commands.
+	 */
 	public void update(){
+		
+		map.update(fleets.get(0).getFleet());
+		
+		
 		//==========Ship List Update Section==========
 		DefaultListModel<String> list = new DefaultListModel<String>();
 		
@@ -96,7 +112,10 @@ public class GUI extends JPanel{
 		
 		int tempIndex = shipList.getSelectedIndex();
 		
+		selectedShip = fleets.get(0).getShip(tempIndex);
+		
 		shipList.setModel(list);
+		
 		shipList.setSelectedIndex(tempIndex);
 		
 		//==========Sector List Update Section=========
@@ -104,7 +123,7 @@ public class GUI extends JPanel{
 		
 		
 		if(listObjects.size()==0){
-			for(ArrayList<GameObject> i : universe.getSector(fleets.get(0).getShip(0).getX(),fleets.get(0).getShip(0).getY()).getSubordinateObjectArrayLists()){
+			for(ArrayList<GameObject> i : universe.getSector(fleets.get(0).getShip(tempIndex).getX(),fleets.get(0).getShip(tempIndex).getY()).getSubordinateObjectArrayLists()){
 				for(GameObject l : i){
 					listObjects.add(l);
 				}
@@ -118,12 +137,8 @@ public class GUI extends JPanel{
 		}else{
 			objects.addElement("No Objects Here!");
 		}
-		
-		tempIndex = sectorObjectList.getSelectedIndex();
-		
 		sectorObjectList.setModel(objects);
 		
-		sectorObjectList.setSelectedIndex(tempIndex);
 		
 		//==========Ship Command Checks and Sends======
 		int[] comCoor = map.getComCoord();
@@ -132,7 +147,7 @@ public class GUI extends JPanel{
 			
 			Ship shipCom = fleets.get(0).getShip(shipList.getSelectedIndex());
 			
-			shipCom.moveShip(comCoor[0], comCoor[1]);
+			announcements.setText(shipCom.moveShip(comCoor[0], comCoor[1]));
 			
 		}
 		
@@ -150,19 +165,35 @@ public class GUI extends JPanel{
 			if(sectorObjectList.getSelectedIndex()>=0){
 				int index = sectorObjectList.getSelectedIndex();
 				GameObject obj = listObjects.get(index);
-				listObjects.clear();
+				
 
 				if(obj.isParent()){
 					switch(obj.getMyObjectType()){
 					case "SOLARSYSTEM":
 						SolarSystem objS = (SolarSystem) obj;
-
+						listObjects.clear();
 						for(ArrayList<GameObject> ago : objS.getSubordinateObjectArrayLists()){
 							for(GameObject go : ago){
 								listObjects.add(go);
 							}
 						}
 						sectorObjectList.clearSelection();
+						break;
+					}
+				}else{
+					switch(obj.getMyObjectType()){
+					case "PLANET":
+						
+						Planet objP = (Planet) obj;				
+						
+						announcements.setText(selectedShip.landOnPlanet(objP));
+						
+						//listObjects.clear();
+						
+						break;
+					case "SUN":
+						Sun objS = (Sun) obj;
+						announcements.setText("Sun!");
 						break;
 					}
 				}
