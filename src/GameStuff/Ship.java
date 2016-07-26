@@ -14,10 +14,11 @@ public class Ship {
 	private final int DEFAULT_MAX_OX = 10000, DEFAULT_MAX_HY = 100000, DEFAULT_MAX_OR = 1000;
 	private final int DEFAULT_MINEPOW = 20, DEFAULT_VACPOW = 20;
 	private final int DEFAULT_HPS = 1000,DEFAULT_HPT = 10, DEFAULT_OPT = 1;//HPS = Hydrogen per sector; OPT/HPT = Oxygen/Hydrogen per tick
-	private final double DEFAULT_SHIP_SPEED = .1; //Sector per Tick
-	private int oxygen, hydrogen, ore, minePow, vacPow, level;
+	private final double DEFAULT_SHIP_SPEED = .5, DEFAULT_LANDING_SPEED = 1; //Sector per Tick
+	private int oxygen, hydrogen, ore, minePow, vacPow, level, landingProgress;
 	private double  coorX, coorY;
-	private boolean isIdle;
+	private boolean isIdle, hasLanded;
+	private Planet plan;
 	
 	/**
 	 * Create a ship with the default max except for ore.
@@ -26,8 +27,10 @@ public class Ship {
 		oxygen = DEFAULT_MAX_OX;
 		hydrogen = DEFAULT_MAX_HY;
 		ore = 0;
+		landingProgress = 0;
 		level = 1;
 		isIdle = true;
+		hasLanded = false;
 		currentCommand = "none";
 		vesselName = name;
 		coorX = x;
@@ -52,13 +55,28 @@ public class Ship {
 		
 	}
 	/**
+	 * Create a command to land on a planet
+	 * 
+	 * @param plan planet to land on
+	 * @return announcements for the calling method
+	 */
+	public String landOnPlanet(Planet plan){
+		String ret = "Command Added!";
+		if(plan.getOre()>100){
+			addCommand("Land",plan,DEFAULT_LANDING_SPEED*level);
+		}else{
+			ret = "Not Enough Room!";
+		}
+		return ret;
+	}
+	/**
 	 * Given a planet and the amount to mine this method creates a command for the mining operation.
 	 * 
 	 * @param plan planet to mine
 	 * @param amount to mine
 	 * @return announcements for the calling method.
 	 */
-	public String minePlanet(Planet plan, int amount){
+	public String minePlanet(int amount){
 		String ret = "Command Added!";
 		if(plan.getOre()>0){
 			addCommand("Mine", plan, amount);
@@ -75,7 +93,7 @@ public class Ship {
 	 * @param amount to vacuum
 	 * @return announcements for the calling method
 	 */
-	public String vacPlanet(Planet plan, int amount){
+	public String vacPlanet(int amount){
 		String ret = "Command Added!";
 		if(plan.isHasAtmosphere()&&plan.getOxygen()>0){
 			addCommand("Vacuum", plan, amount);
@@ -159,6 +177,12 @@ public class Ship {
 				if((int)coorX==x&&(int)coorY==y){
 					commandList.remove(currCommand);
 				}
+				break;
+			case "Land":
+				landingProgress += (double) currCommand[2];
+				
+				//if(landingProgress>)
+				
 				break;
 			}
 		}

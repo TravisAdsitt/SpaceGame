@@ -35,6 +35,14 @@ public class Fleet {
 		ships = new ArrayList<Ship>();
 	}
 	/**
+	 * Get the ships in arraylist form
+	 * 
+	 * @return arraylist of ships
+	 */
+	public ArrayList<Ship> getFleet(){
+		return ships;
+	}
+	/**
 	 * Adds a ship to the fleet
 	 * 
 	 * @param newShip ship to be added

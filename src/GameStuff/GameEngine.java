@@ -17,7 +17,7 @@ public class GameEngine {
 	private static Universe universe;
 	private static GUI gui;
 	private static JFrame gameWindow; 
-	private static final int TICK_RATE = 100;
+	private static final int TICK_RATE = 1000;
 	
 	public static void main(String[] args){
 		player = new Player("Travis");
@@ -30,6 +30,9 @@ public class GameEngine {
 		gameWindow.pack();
 		gameWindow.setVisible(true);
 		
+		update();
+	}
+	public static void update(){
 		Thread run = new Thread(new Runnable() {
 			@Override
 			public void run() {
