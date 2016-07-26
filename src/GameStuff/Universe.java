@@ -14,7 +14,6 @@ public class Universe {
 	
 	
 	
-	
 	public Universe(int gridSize){
 		this.gridSize = gridSize;
 		universe = new Sector[gridSize][gridSize];
@@ -25,7 +24,14 @@ public class Universe {
 	}
 	
 	
-	
+	public Sector getSector(int x, int y){
+		if(x<gridSize&&y<gridSize){
+			return universe[x][y];
+		}else{
+			return universe[0][0];
+		}
+		
+	}
 	/**
 	 * Gets the data pertinent for the map
 	 * 
@@ -34,9 +40,16 @@ public class Universe {
 	public Sector[][] getUniverseData(){
 		return universe;
 	}
+	/**
+	 * Gets a string array for the objects in the sector
+	 * 
+	 * @param x sector coordinate
+	 * @param y sector coordinate
+	 * @return string array for the objects in the sector
+	 */
 	public String[] getSectorObjectArray(int x, int y){
 		
-		return universe[x][y].getSectorObjectStringArray();
+		return universe[x][y].getObjectList();
 		
 	}
 	/**

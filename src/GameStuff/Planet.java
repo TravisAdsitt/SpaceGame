@@ -8,12 +8,13 @@ import java.util.Random;
  * @author Travis Adsitt
  *
  */
-public class Planet {
+public class Planet extends GameObject{
 	private final int MAX_ORE = 10000, MAX_OXYGEN = 100000;
 	private boolean hasLife, isAlive, hasAtmosphere;
 	private int ore, oxygen, id;
 	private double density;
 	private Random ran;
+	private final String TYPE = "PLANET";
 	/**
 	 * Constructor for the planets initialization.
 	 */
@@ -103,5 +104,13 @@ public class Planet {
 				id, hasLife, hasAtmosphere, isAlive, ore, oxygen);
 		
 		return ret;
+	}
+	/**
+	 * Used to find the type of object this is
+	 * 
+	 * @return string type
+	 */
+	public String getMyObjectType(){
+		return TYPE;
 	}
 }

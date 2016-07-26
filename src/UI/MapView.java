@@ -13,6 +13,14 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 import GameStuff.Sector;
+/**
+ * This is to handle the drawing of the map and the highlighted squares.
+ * 
+ * 
+ * @author Travis Adsitt
+ *
+ */
+
 
 public class MapView extends JPanel{
 

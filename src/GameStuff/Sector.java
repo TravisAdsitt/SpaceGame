@@ -10,11 +10,13 @@ import java.util.Random;
  */
 public class Sector {
 	
-	private ArrayList sectorObjects;
+	private ArrayList<GameObject> sectorObjects;
 	private ArrayList<SolarSystem> sectorSolarSystems;
 	private Random ran;
 	private String id;
 	private int xCoor, yCoor;
+	public final boolean PARENT = true;
+	private final String TYPE = "SECTOR";
 	
 	/**
 	 * Constructor for the sector.
@@ -115,15 +117,58 @@ public class Sector {
 	  * 
 	  * @param object to add
 	  */
-	public void addObjectToSector(Object object){
+	public void addObjectToSector(GameObject object){
 		sectorObjects.add(object);
+	}
+	/**
+	 * Used to find the type of object this is
+	 * 
+	 * @return string type
+	 */
+	public String getMyObjectType(){
+		return TYPE;
+	}
+	/**
+	 * Used to get a subordinate object
+	 * 
+	 * @param index of the object to get
+	 * @return subordinate object
+	 */
+	public ArrayList<ArrayList> getSubordinateObjectArrayLists(){
+		
+		ArrayList<ArrayList> ret = new ArrayList<ArrayList>();
+		
+		ret.add(sectorSolarSystems);
+		ret.add(sectorObjects);
+		
+		
+		
+		return ret;
+	}
+	/**
+	 * When trying to figure out what object you are getting from the sector you check here.
+	 * 
+	 * @param index of the object
+	 * @return string of object type
+	 */
+	public String getSubordinateObjectType(int index){
+		String ret = "";
+		if(index<sectorSolarSystems.size()){
+			ret = sectorSolarSystems.get(index).getMyObjectType();
+		}else if(index<sectorSolarSystems.size()+sectorObjects.size()){
+			ret = sectorObjects.get(index).getMyObjectType();
+		}else{
+			ret = "Object Not Found!";
+		}
+		
+		return ret;
 	}
 	/**
 	 * Getting sector objects for the lists on the GUI
 	 * 
 	 * @return string array for a list
 	 */
-	public String[] getSectorObjectStringArray(){
+	public String[] getObjectList(){
 		String[] ret = new String[sectorObjects.size()+sectorSolarSystems.size()];
 		
 		int index = 0;
@@ -133,11 +178,12 @@ public class Sector {
 			index++;
 		}
 		
-		for(Object o : sectorObjects){
+		for(GameObject o : sectorObjects){
 			ret[index] = o.toString();
 			index++;
 		}
 		
 		return ret;
 	}
+	
 }

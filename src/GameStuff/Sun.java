@@ -7,11 +7,12 @@ import java.util.Random;
  * @author Travis Adsitt
  *
  */
-public class Sun {
+public class Sun extends GameObject{
 	private final int MAX_HYDROGEN = 200000000;
 	private double hydrogen;
 	private int lightAmount;
 	private Random ran;
+	private final String TYPE = "SUN";
 	
 	public Sun(){
 		ran = new Random();
@@ -47,5 +48,12 @@ public class Sun {
 		
 		return ret;
 	}
-	
+	/**
+	 * Used to find the type of object this is
+	 * 
+	 * @return string type
+	 */
+	public String getMyObjectType(){
+		return TYPE;
+	}
 }

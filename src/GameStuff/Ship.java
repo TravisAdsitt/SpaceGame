@@ -2,7 +2,12 @@ package GameStuff;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-
+/**
+ * Class that handles the ship object
+ * 
+ * @author Travis Adsitt
+ *
+ */
 public class Ship {
 	private String vesselName, currentCommand;
 	private ArrayList<Object[]> commandList;
@@ -82,6 +87,7 @@ public class Ship {
 	}
 	/**
 	 * Given coordinates this will add the command to move to the specified coordinates.
+	 * 
 	 * @param x coordinate
 	 * @param y coordinate
 	 * @return announcements for the calling method

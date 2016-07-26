@@ -2,6 +2,7 @@ package GameStuff;
 
 import java.util.ArrayList;
 /**
+ * Player of the game
  * 
  * @author Travis Adsitt
  *

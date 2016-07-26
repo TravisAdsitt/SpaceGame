@@ -2,6 +2,7 @@ package GameStuff;
 
 import java.util.ArrayList;
 /**
+ * Class that handles a lot of ships, this is for when different types of ships is implemented.
  * 
  * @author Travis Adsitt
  *

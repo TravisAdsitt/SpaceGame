@@ -9,12 +9,14 @@ import java.util.Random;
  * Used to handle planets and a sun.
  *
  */
-public class SolarSystem {
+public class SolarSystem extends GameObject {
 	private Planet[] planets;
 	private Sun[] suns;
 	private Random ran;
 	private ArrayList spaceJunk;
 	private int sector, id;
+	public final boolean PARENT = true;
+	private final String TYPE = "SOLARSYSTEM";
 	
 	
 	/**
@@ -73,7 +75,22 @@ public class SolarSystem {
 	public void addSpaceJunk(Object junk){
 		spaceJunk.add(junk);
 	}
-	
+	/**
+	 * Get the planets in the solar system
+	 * 
+	 * @return array of planets
+	 */
+	public Planet[] getPlanets(){
+		return planets;
+	}
+	/**
+	 * Get the suns in the solar system
+	 * 
+	 * @return array of suns
+	 */
+	public Sun[] getSuns(){
+		return suns;
+	}
 	/**
 	 * Get the number of planets in the solar system. 
 	 * 
@@ -126,6 +143,36 @@ public class SolarSystem {
 		
 		return ret;
 	}
+	public ArrayList<ArrayList> getSubordinateObjectArrayLists(){
+		ArrayList<Planet> planArrayL = new ArrayList<Planet>();
+		ArrayList<Sun> sunArrayL = new ArrayList<Sun>();
+		ArrayList<ArrayList> ret = new ArrayList<ArrayList>();
+		
+		for(Planet p : planets){
+			planArrayL.add(p);
+		}
+		for(Sun s : suns){
+			sunArrayL.add(s);
+		}
+		
+		ret.add(planArrayL);
+		ret.add(sunArrayL);
+		ret.add(spaceJunk);
+		
+		return ret;
+		
+	}
+	/**
+	 * Used to find the type of object this is
+	 * 
+	 * @return string type
+	 */
+	public String getMyObjectType(){
+		return TYPE;
+	}
 	
+	public boolean isParent(){
+		return PARENT;
+	}
 	
 }
