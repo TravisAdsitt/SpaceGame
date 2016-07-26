@@ -18,6 +18,7 @@ import GameStuff.Fleet;
 import GameStuff.GameObject;
 import GameStuff.Planet;
 import GameStuff.Ship;
+import GameStuff.ShipStates;
 import GameStuff.SolarSystem;
 import GameStuff.Sun;
 import GameStuff.Universe;
@@ -73,7 +74,6 @@ public class GUI extends JPanel{
 		sectorObjectList = new JList<String>(objects);
 		sectorObjectList.setPreferredSize(new Dimension(600,100));
 		sectorObjectList.addListSelectionListener(new ObjectListListener());
-		
 		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		
 		
@@ -92,7 +92,7 @@ public class GUI extends JPanel{
 		
 		add(west);
 		add(east);
-		
+		//Timer tmr = new Timer(10,)
 		
 	}
 	/**
@@ -188,6 +188,8 @@ public class GUI extends JPanel{
 						
 						announcements.setText(selectedShip.landOnPlanet(objP));
 						
+						selectedShip.setState(ShipStates.ORBITING);
+						
 						//listObjects.clear();
 						
 						break;
@@ -200,6 +202,7 @@ public class GUI extends JPanel{
 			}
 		}
 	}
+	//private class RefreshGUI implements Action
 
 
 }
