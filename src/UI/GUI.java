@@ -3,6 +3,8 @@ package UI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -11,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -92,7 +95,8 @@ public class GUI extends JPanel{
 		
 		add(west);
 		add(east);
-		//Timer tmr = new Timer(10,)
+		Timer tmr = new Timer(100,new RefreshGUI());
+		tmr.start();
 		
 	}
 	/**
@@ -203,6 +207,14 @@ public class GUI extends JPanel{
 		}
 	}
 	//private class RefreshGUI implements Action
+	private class RefreshGUI implements ActionListener{
 
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			update();
+			
+		}
+		
+	}
 
 }

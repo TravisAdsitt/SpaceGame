@@ -1,6 +1,10 @@
 package GameStuff;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.Timer;
 /**
  * Player of the game
  * 
@@ -11,17 +15,18 @@ public class Player {
 	
 	private String playerName;
 	private ArrayList<Fleet> fleets;
-	
 	/**
 	 * Constructor to create a player with a name and an empty fleet.
 	 * 
 	 * @param name of the player
 	 */
-	public Player(String name){
+	public Player(String name, int tick){
 		playerName = name;
 		fleets = new ArrayList<Fleet>();
 		fleets.add(new Fleet());
 		fleets.get(0).addShip(new Ship("1",0,0));
+		Timer tmr = new Timer(tick, new RefreshGUI());
+		tmr.start();
 	}
 	
 	public void update(){
@@ -58,5 +63,13 @@ public class Player {
 		
 		return ret;
 	}
-	
+	private class RefreshGUI implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			update();
+			
+		}
+		
+	}
 }

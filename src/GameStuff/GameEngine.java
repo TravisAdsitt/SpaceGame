@@ -1,6 +1,10 @@
 package GameStuff;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import UI.GUI;
 /**
@@ -17,10 +21,10 @@ public class GameEngine {
 	private static Universe universe;
 	private static GUI gui;
 	private static JFrame gameWindow; 
-	private static final int TICK_RATE = 1000;
+	private static final int TICK_RATE = 100;
 	
 	public static void main(String[] args){
-		player = new Player("Travis");
+		player = new Player("Travis",TICK_RATE);
 		universe = new Universe(99);
 		gui = new GUI(universe,player.getGUIInfo());
 		
@@ -30,27 +34,5 @@ public class GameEngine {
 		gameWindow.pack();
 		gameWindow.setVisible(true);
 		
-		update();
 	}
-	public static void update(){
-		Thread run = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				gui.update();
-				player.update();
-				//System.out.println("Tick");
-				try {
-					Thread.sleep(TICK_RATE);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				run();
-			}
-			
-		});
-		
-		run.run();
-	}
-	
 }

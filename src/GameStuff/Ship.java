@@ -47,14 +47,19 @@ public class Ship {
 	 * 
 	 */
 	public void update(){
-		hydrogen -= DEFAULT_HPT/level;
-		oxygen -= DEFAULT_OPT/level;
-		
-		int tempX = (int) coorX, tempY = (int) coorY;
-		
-		performCommand();
-		
-		hydrogen -= ((((int)coorX)-tempX)+(((int)coorY)-tempY))==0?0:(DEFAULT_HPS/level);
+		if(state == ShipStates.LANDED && plan.isHasAtmosphere()){
+			hydrogen -= DEFAULT_HPT/level;// Still need power even if we dont need atmosphere.
+		}else{
+			hydrogen -= DEFAULT_HPT/level;
+			oxygen -= DEFAULT_OPT/level;
+
+			int tempX = (int) coorX, tempY = (int) coorY; //storing the coordinates for movement
+
+			performCommand();
+
+			hydrogen -= ((((int)coorX)-tempX)+(((int)coorY)-tempY))==0?0:(DEFAULT_HPS/level);// if we have moved a sector we want to subtract more hydrogen for using the rockets.
+		}
+
 		
 	}
 	public void setState(ShipStates state){
