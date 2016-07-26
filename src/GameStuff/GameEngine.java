@@ -17,7 +17,7 @@ public class GameEngine {
 	private static Universe universe;
 	private static GUI gui;
 	private static JFrame gameWindow; 
-	private static final int TICK_RATE = 10;
+	private static final int TICK_RATE = 100;
 	
 	public static void main(String[] args){
 		player = new Player("Travis");

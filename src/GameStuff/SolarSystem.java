@@ -117,12 +117,12 @@ public class SolarSystem {
 						planets.length,
 						planets.length==1?"planet":"planets",
 								getLightLevel()>50?"does":"does not");
-		for(Planet p : planets){
-			ret += p.toString();
-		}
-		for(Sun s : suns){
-			ret += s.toString();
-		}
+		//for(Planet p : planets){
+		//	ret += p.toString();
+		//}
+		//for(Sun s : suns){
+		//	ret += s.toString();
+		//}
 		
 		return ret;
 	}

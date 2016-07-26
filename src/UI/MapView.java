@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -20,10 +21,13 @@ public class MapView extends JPanel{
 	private Sector[][] mapData;
 	private Random ran;
 	private int hX,hY;
+	private ArrayList<int[]> hCoor;
 	private boolean rightClicked;
 	
 	public MapView(Sector[][] mapData){
 		this.mapData = mapData;
+		
+		hCoor = new ArrayList<int[]>();
 		
 		ran = new Random();
 		rightClicked = false;
@@ -57,7 +61,10 @@ public class MapView extends JPanel{
 	public int getHY(){
 		return hY;
 	}
-	
+	/**
+	 * Returns an object with the coordinates of a command if there was a right click event on the map
+	 * @return int[] object with coordinates in it
+	 */
 	public int[] getComCoord(){
 		int[] ret = new int[2];
 		
@@ -75,11 +82,24 @@ public class MapView extends JPanel{
 		
 		return ret;
 	}
+	public void refreshHighlights(){
+		hCoor.clear();
+		
+		int[] coor = new int[3]; 
+		
+		coor[0] = hX;
+		coor[1] = hY;
+		coor[2] = 0;
+		
+		hCoor.add(coor);
+		
+		
+	}
 	/**
-	 * Draws the stars and 
+	 * Draws the stars and highlights
 	 */
 	public void paintComponent(Graphics g){
-		
+		refreshHighlights();
 		for(int x = 0 ; x<mapW ; x+=BLOCK_SIDE){
 			for(int y = 0 ; y<mapH ; y+=BLOCK_SIDE){
 				
@@ -102,17 +122,20 @@ public class MapView extends JPanel{
 					g.drawRect(sX, sY, 1, 1);
 					
 				}
-				
-				if(x/BLOCK_SIDE == hX && y/BLOCK_SIDE == hY){
-					g.setColor(new Color(255,255,0,175));
-					
-					g.fillRect(x, y, BLOCK_SIDE, BLOCK_SIDE);
-					
+				for(int[] i : hCoor){
+					switch(i[2]){
+					case 0:
+						g.setColor(new Color(255,255,0,100));
+						g.fillRect(i[0]*BLOCK_SIDE, i[1]*BLOCK_SIDE, BLOCK_SIDE, BLOCK_SIDE);
+						break;
+					case 1:
+						
+					}
 				}
-				
+
 			}
 		}
-		
+
 	}
 	
 	private class MouseMapListener implements MouseListener{
@@ -120,7 +143,7 @@ public class MapView extends JPanel{
 		public void mouseClicked(MouseEvent arg0) {
 			hX = (int) arg0.getPoint().getX()/BLOCK_SIDE;
 			hY = (int) arg0.getPoint().getY()/BLOCK_SIDE;
-
+			
 			//System.out.println(mapData[hX][hY].getNumSolarSystem());
 			
 			switch(arg0.getButton()){
