@@ -3,7 +3,8 @@ package GameStuff;
 public enum ShipStates {
 	LANDED(true,true,false,false),
 	FLYING(false,false,true,false),
-	ORBITING(false,true,true,true);
+	ORBITING_PLANET(false,true,true,true),
+	ORBITING_SUN(false,true,true,false);
 	
 	
 	private boolean canMine, canVac, canMoveSector, canLand;

@@ -19,6 +19,9 @@ public class Sun extends GameObject{
 		lightAmount = 100;
 		hydrogen = ran.nextInt(MAX_HYDROGEN);
 	}
+	public int getHydrogen(){
+		return (int) hydrogen;
+	}
 	/**
 	 * Used to harvest hydrogen from the sun, also effects the light.
 	 * 

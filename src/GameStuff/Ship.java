@@ -20,6 +20,7 @@ public class Ship {
 	private double  coorX, coorY;
 	private boolean isIdle;
 	private Planet plan;
+	private Sun sun;
 	
 	
 	/**
@@ -48,7 +49,7 @@ public class Ship {
 	 */
 	public void update(){
 		if(state == ShipStates.LANDED && plan.isHasAtmosphere()){
-			hydrogen -= DEFAULT_HPT/level;// Still need power even if we dont need atmosphere.
+			performCommand();
 		}else{
 			hydrogen -= DEFAULT_HPT/level;
 			oxygen -= DEFAULT_OPT/level;
@@ -62,8 +63,39 @@ public class Ship {
 
 		
 	}
+	public void leaveOrbit(){
+		commandList.clear();
+		state = ShipStates.FLYING;
+	}
+	public String orbitSun(Sun sun){
+		String ret = "Command Added!";
+		if(state == ShipStates.FLYING){
+		this.sun = sun;
+		
+		setState(ShipStates.ORBITING_SUN);
+		}else{
+			ret = "You need to be flying!";
+		}
+		return ret;
+	}
+	public String orbitPlanet(Planet plan){
+		String ret = "Command Added!";
+		
+		if(state == ShipStates.FLYING){
+			this.plan = plan;
+			
+			setState(ShipStates.ORBITING_PLANET);
+		}else{
+			ret = "You need to be flying!";
+		}
+		
+		return ret;
+	}
 	public void setState(ShipStates state){
 		this.state = state;
+	}
+	public ShipStates getState(){
+		return state;
 	}
 	/**
 	 * Create a command to land on a planet
@@ -71,11 +103,10 @@ public class Ship {
 	 * @param plan planet to land on
 	 * @return announcements for the calling method
 	 */
-	public String landOnPlanet(Planet plan){
+	public String landOnPlanet(){
 		String ret = "Command Added!";
 		if(plan.getOre()>100){
 			addCommand("Land",plan,DEFAULT_LANDING_SPEED*level);
-			state = ShipStates.ORBITING;
 		}else{
 			ret = "Not Enough Room!";
 		}
@@ -109,6 +140,16 @@ public class Ship {
 		String ret = "Command Added!";
 		if(plan.isHasAtmosphere()&&plan.getOxygen()>0){
 			addCommand("Vacuum", plan, amount);
+			isIdle = false;
+		}else{
+			ret = "No Atmosphere!";
+		}
+		return ret;
+	}
+	public String vacSun(int amount){
+		String ret = "Command Added!";
+		if(sun.getHydrogen()>0){
+			addCommand("Vacuum", sun, amount);
 			isIdle = false;
 		}else{
 			ret = "No Atmosphere!";
@@ -150,16 +191,19 @@ public class Ship {
 			case "Mine":
 				if(state.canMine()){
 					p = (Planet) currCommand[1];
-					amount = (int) currCommand[2];
+					amount = (double) currCommand[2];
 
-					obtained = (int) p.minePlanet(minePow);
+					obtained = (int) p.minePlanet(DEFAULT_MINEPOW*level);
 
-					ore += obtained;
+					ore += obtained>amount?amount:obtained;
+					
 					currCommand[2] = amount - obtained;
 
 					obtained = 0;
-
-					if(amount==0){
+					
+					commandList.set(0, currCommand);
+					
+					if(amount<=0||p.getOre()==0){
 						commandList.remove(currCommand);
 					}
 				}else{
@@ -169,13 +213,27 @@ public class Ship {
 				
 				break;
 			case "Vacuum":
-				if(state.canVac()){
+				if(state == ShipStates.ORBITING_PLANET || state == ShipStates.LANDED){
 					p = (Planet) currCommand[1];
-					amount = (int) currCommand[2];
+					amount = (double) currCommand[2];
 
-					obtained = p.harvestOxygen(vacPow);
+					obtained = p.harvestOxygen(DEFAULT_VACPOW*level);
 
-					oxygen += obtained;
+					oxygen += obtained>amount?amount:obtained;
+					currCommand[2] = amount - obtained;
+
+					obtained = 0;
+
+					if(amount==0){
+						commandList.remove(currCommand);
+					}
+				}else if(state == ShipStates.ORBITING_SUN){
+					Sun s = (Sun) currCommand[1];
+					amount = (double) currCommand[2];
+
+					obtained = s.harvestHydrogen(DEFAULT_VACPOW*level);
+
+					hydrogen += obtained>amount?amount:obtained;
 					currCommand[2] = amount - obtained;
 
 					obtained = 0;
@@ -211,6 +269,7 @@ public class Ship {
 					Planet plan = (Planet) currCommand[1];
 					if(plan.getOxygen()<landingProgress){
 						state = ShipStates.LANDED;
+						commandList.remove(currCommand);
 						this.plan = plan;
 						landingProgress = 0;
 					}
