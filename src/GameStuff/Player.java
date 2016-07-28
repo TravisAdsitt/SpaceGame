@@ -15,16 +15,18 @@ public class Player {
 	
 	private String playerName;
 	private ArrayList<Fleet> fleets;
+	private NameGenerator names;
 	/**
 	 * Constructor to create a player with a name and an empty fleet.
 	 * 
 	 * @param name of the player
 	 */
 	public Player(String name, int tick){
+		names = new NameGenerator();
 		playerName = name;
 		fleets = new ArrayList<Fleet>();
 		fleets.add(new Fleet());
-		fleets.get(0).addShip(new Ship("1",0,0));
+		fleets.get(0).addShip(new Ship(names.getRandomName(),0,0));
 		Timer tmr = new Timer(tick, new RefreshGUI());
 		tmr.start();
 	}
