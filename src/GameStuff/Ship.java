@@ -67,6 +67,12 @@ public class Ship {
 		commandList.clear();
 		state = ShipStates.FLYING;
 	}
+	/**
+	 * Set the sun to be orbiting 
+	 * 
+	 * @param sun to orbit
+	 * @return announcements for the user
+	 */
 	public String orbitSun(Sun sun){
 		String ret = "Command Added!";
 		if(state == ShipStates.FLYING){
@@ -78,6 +84,12 @@ public class Ship {
 		}
 		return ret;
 	}
+	/**
+	 * Set the planet we would like to orbit
+	 * 
+	 * @param plan planet to orbit
+	 * @return announcements for the user
+	 */
 	public String orbitPlanet(Planet plan){
 		String ret = "Command Added!";
 		
@@ -91,9 +103,19 @@ public class Ship {
 		
 		return ret;
 	}
+	/**
+	 * Sets the ships state
+	 * 
+	 * @param state to be set to
+	 */
 	public void setState(ShipStates state){
 		this.state = state;
 	}
+	/**
+	 * Gets the current state of the ship.
+	 * 
+	 * @return ships state
+	 */
 	public ShipStates getState(){
 		return state;
 	}

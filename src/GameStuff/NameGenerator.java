@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-
+/**
+ * 
+ * @author Tyler FiveCents Nicholls
+ *
+ */
 
 
 public class NameGenerator {
@@ -90,7 +94,7 @@ public class NameGenerator {
 		
 		
 		name = ad + " " + noun;
-		System.out.println(name);
+		//System.out.println(name);
 		return name;
 	}
 
