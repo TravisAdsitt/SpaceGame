@@ -59,45 +59,23 @@ public class GUI extends JPanel{
 		initCenterPanel();
 		initEastPanel();
 		initSouthPanel();
+		initWestPanel();
+		
 		
 		JPanel superPanel = new JPanel();
 		superPanel.setLayout(new BorderLayout());
+		
 		superPanel.add(centerPanel,BorderLayout.CENTER );
 		superPanel.add(eastPanel, BorderLayout.EAST);
 		superPanel.add(southPanel, BorderLayout.SOUTH);
+		superPanel.add(westPanel, BorderLayout.WEST);
 		
 		add(superPanel);
 		
-		/*
-		announcements = new JLabel();
-		announcements.setPreferredSize(new Dimension(500,100));
-		
-		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-		
-		//===============Buttons Panel===============
-		
-		
-		
-		JPanel east = new JPanel();
-		JPanel west = new JPanel();
-		
-		east.setLayout(new BoxLayout(east,BoxLayout.Y_AXIS));
-		west.setLayout(new BoxLayout(west,BoxLayout.Y_AXIS));
-		
-		west.add(map);
-		east.add(announcements);
-		east.add(shipListLabel);
-		east.add(shipList);
-		east.add(objectSectorListLabel);
-		east.add(sectorObjectList);
-		east.add(new JLabel("Commands"));
-		east.add(buttons);
-		
-		add(west);
-		add(east);
 		Timer tmr = new Timer(100,new RefreshGUI());
 		tmr.start();
-		*/
+		
+		
 	}
 	/**
 	 * This is for initializing the Center Panel
@@ -150,11 +128,15 @@ public class GUI extends JPanel{
 	}
 	public void initSouthPanel(){
 		southPanel = new JPanel();
+		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		
 		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons,BoxLayout.X_AXIS));
+		buttons.setPreferredSize(new Dimension(500,100));
 		
 		ButtonsListener controls = new ButtonsListener();
+		
+		JLabel buttonsLabel = new JLabel("Commands Available");
 		mine = new JButton("Mine");
 		vac = new JButton("Vacuum");
 		takeoff = new JButton("Take Off");
@@ -162,6 +144,8 @@ public class GUI extends JPanel{
 		exitorbit = new JButton("Exit Orbit");
 		exitSystem = new JButton("Exit System");
 		
+		buttons.setAlignmentX(CENTER_ALIGNMENT);
+		buttonsLabel.setAlignmentX(CENTER_ALIGNMENT);
 		mine.addActionListener(controls);
 		vac.addActionListener(controls);
 		takeoff.addActionListener(controls);
@@ -169,7 +153,18 @@ public class GUI extends JPanel{
 		exitorbit.addActionListener(controls);
 		exitSystem.addActionListener(controls);
 		
+		southPanel.add(buttonsLabel);
 		southPanel.add(buttons);
+	}
+	public void initWestPanel(){
+		westPanel = new JPanel();
+		westPanel.setLayout(new BoxLayout(westPanel,BoxLayout.Y_AXIS));
+		
+		announcements = new JLabel();
+		announcements.setPreferredSize(new Dimension(500,200));
+		
+		westPanel.add(announcements);
+		
 	}
 	/**
 	 * Used for updating and checking for ship commands.
