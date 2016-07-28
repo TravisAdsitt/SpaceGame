@@ -1,5 +1,6 @@
 package UI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -45,21 +46,58 @@ public class GUI extends JPanel{
 	private JLabel announcements;
 	private Ship selectedShip;
 	private JPanel buttons;
+	private JPanel northPanel, southPanel, eastPanel, westPanel, centerPanel;
 	JButton mine, vac, takeoff, land, exitorbit, exitSystem;
 	
 	public GUI(Universe uni, Object[] playerData){
+		
 		systemSelected = false;
 		universe = uni; 
 		listObjects = new ArrayList<GameObject>();
+		fleets = (ArrayList<Fleet>) playerData[0];
 		
-		announcements = new JLabel();
-		announcements.setPreferredSize(new Dimension(500,100));
+		initCenterPanel();
+		initEastPanel();
+		initSouthPanel();
+		initWestPanel();
+		
+		
+		JPanel superPanel = new JPanel();
+		superPanel.setLayout(new BorderLayout());
+		
+		superPanel.add(centerPanel,BorderLayout.CENTER );
+		superPanel.add(eastPanel, BorderLayout.EAST);
+		superPanel.add(southPanel, BorderLayout.SOUTH);
+		superPanel.add(westPanel, BorderLayout.WEST);
+		
+		add(superPanel);
+		
+		Timer tmr = new Timer(100,new RefreshGUI());
+		tmr.start();
+		
+		
+	}
+	/**
+	 * This is for initializing the Center Panel
+	 */
+	public void initCenterPanel(){
+		centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
+		
+		map = new MapView(universe.getUniverseData(),fleets.get(0).getFleet());
+		centerPanel.add(map);
+		
+	}
+	public void initEastPanel(){
+		eastPanel = new JPanel();
+		eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+		
 		JLabel shipListLabel = new JLabel("Ships", SwingConstants.CENTER);
 		JLabel objectSectorListLabel = new JLabel("Objects", SwingConstants.CENTER);
 		
-		fleets = (ArrayList<Fleet>) playerData[0];
 		
-		map = new MapView(universe.getUniverseData(),fleets.get(0).getFleet());
+		
+		
 		
 		DefaultListModel<String> ships = new DefaultListModel<String>();
 		DefaultListModel<String> objects = new DefaultListModel<String>();
@@ -81,14 +119,24 @@ public class GUI extends JPanel{
 		sectorObjectList = new JList<String>(objects);
 		sectorObjectList.setPreferredSize(new Dimension(600,100));
 		sectorObjectList.addListSelectionListener(new ObjectListListener());
-		setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
 		
-		//===============Buttons Panel===============
+		eastPanel.add(shipListLabel);
+		eastPanel.add(shipList);
+		eastPanel.add(objectSectorListLabel);
+		eastPanel.add(sectorObjectList);
+		
+	}
+	public void initSouthPanel(){
+		southPanel = new JPanel();
+		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		
 		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons,BoxLayout.X_AXIS));
+		buttons.setPreferredSize(new Dimension(500,100));
 		
 		ButtonsListener controls = new ButtonsListener();
+		
+		JLabel buttonsLabel = new JLabel("Commands Available");
 		mine = new JButton("Mine");
 		vac = new JButton("Vacuum");
 		takeoff = new JButton("Take Off");
@@ -96,6 +144,8 @@ public class GUI extends JPanel{
 		exitorbit = new JButton("Exit Orbit");
 		exitSystem = new JButton("Exit System");
 		
+		buttons.setAlignmentX(CENTER_ALIGNMENT);
+		buttonsLabel.setAlignmentX(CENTER_ALIGNMENT);
 		mine.addActionListener(controls);
 		vac.addActionListener(controls);
 		takeoff.addActionListener(controls);
@@ -103,25 +153,17 @@ public class GUI extends JPanel{
 		exitorbit.addActionListener(controls);
 		exitSystem.addActionListener(controls);
 		
-		JPanel east = new JPanel();
-		JPanel west = new JPanel();
+		southPanel.add(buttonsLabel);
+		southPanel.add(buttons);
+	}
+	public void initWestPanel(){
+		westPanel = new JPanel();
+		westPanel.setLayout(new BoxLayout(westPanel,BoxLayout.Y_AXIS));
 		
-		east.setLayout(new BoxLayout(east,BoxLayout.Y_AXIS));
-		west.setLayout(new BoxLayout(west,BoxLayout.Y_AXIS));
+		announcements = new JLabel();
+		announcements.setPreferredSize(new Dimension(500,200));
 		
-		west.add(map);
-		east.add(announcements);
-		east.add(shipListLabel);
-		east.add(shipList);
-		east.add(objectSectorListLabel);
-		east.add(sectorObjectList);
-		east.add(new JLabel("Commands"));
-		east.add(buttons);
-		
-		add(west);
-		add(east);
-		Timer tmr = new Timer(100,new RefreshGUI());
-		tmr.start();
+		westPanel.add(announcements);
 		
 	}
 	/**
