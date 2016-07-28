@@ -12,6 +12,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -280,16 +281,16 @@ public class GUI extends JPanel{
 				fleets.get(0).getFleet().get(shipList.getSelectedIndex()).landOnPlanet();
 				break;
 			case"Mine":
-				fleets.get(0).getFleet().get(shipList.getSelectedIndex()).minePlanet(500);
+				fleets.get(0).getFleet().get(shipList.getSelectedIndex()).minePlanet(Integer.valueOf(JOptionPane.showInputDialog("How Much?")));
 				break;
 			case"Take Off":
 				fleets.get(0).getFleet().get(shipList.getSelectedIndex()).setState(ShipStates.ORBITING_PLANET);
 				break;
 			case"Vacuum":
 				if(fleets.get(0).getFleet().get(shipList.getSelectedIndex()).getState() == ShipStates.ORBITING_SUN){
-					fleets.get(0).getFleet().get(shipList.getSelectedIndex()).vacSun(500);
+					fleets.get(0).getFleet().get(shipList.getSelectedIndex()).vacSun(Integer.valueOf(JOptionPane.showInputDialog("How Much?")));
 				}else{
-					fleets.get(0).getFleet().get(shipList.getSelectedIndex()).vacPlanet(500);
+					fleets.get(0).getFleet().get(shipList.getSelectedIndex()).vacPlanet(Integer.valueOf(JOptionPane.showInputDialog("How Much?")));
 				}
 				break;
 			case"Exit Orbit":
