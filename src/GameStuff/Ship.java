@@ -168,10 +168,14 @@ public class Ship {
 	public String moveShip(int x, int y){
 		String ret = "Command Added!";
 		
-		int[] coordinates = new int[2];
+		Dimension[] coordinates = new Dimension[2];
 		
-		coordinates[0] = x;
-		coordinates[1] = y;
+		Dimension cameFrom = new Dimension((int)coorX,(int)coorY);
+		
+		Dimension goingTo = new Dimension(x,y);
+		
+		coordinates[0] = cameFrom;
+		coordinates[1] = goingTo;
 		
 		addCommand("Move",coordinates,DEFAULT_SHIP_SPEED*level);
 		
@@ -255,13 +259,12 @@ public class Ship {
 				
 				
 				//this is so it captures the initial distance only right away, because if these values update it would change the speed of our ship
-				if(counter == 0){
-					initialXDistance = (int)coorX;
-					initialYDistance = (int)coorY;
-				}
+					initialXDistance = ((Dimension[])currCommand[1])[0].width;
+					initialYDistance = ((Dimension[])currCommand[1])[0].height;
+					
 				if(state.canMoveSector()){
 					//calculates where the x and y coordinate we clicked on are
-					int x = ((int[])currCommand[1])[0], y = ((int[])currCommand[1])[1];
+					int x = ((Dimension[])currCommand[1])[1].width, y = ((Dimension[])currCommand[1])[1].height;
 					amount = (double)currCommand[2];
 					
 					//slope of our line
@@ -272,10 +275,10 @@ public class Ship {
 						coorX = x;
 						coorY = y;
 					}
-					else if ((int)coorX!=x)
+					else if ((int)coorX!=x&&(int)coorY!=y)
 					{
-						coorX += (x-initialXDistance)* amount/20;
-						coorY += (y-initialYDistance) *amount/20;
+						coorX += (x-initialXDistance) * amount/20;
+						coorY += (y-initialYDistance) * amount/20;
 					}
 					
 //					if((int)coorY<y){
@@ -291,6 +294,7 @@ public class Ship {
 
 					if((int)coorX==x&&(int)coorY==y){
 						commandList.remove(currCommand);
+						
 					}
 					
 				}else{
