@@ -21,7 +21,9 @@ public class Ship {
 	private boolean isIdle;
 	private Planet plan;
 	private Sun sun;
-	
+	int counter = 0;
+	int initialXDistance=0;
+	int initialYDistance=0;
 	
 	/**
 	 * Create a ship with the default max except for ore.
@@ -67,12 +69,6 @@ public class Ship {
 		commandList.clear();
 		state = ShipStates.FLYING;
 	}
-	/**
-	 * Set the sun to be orbiting 
-	 * 
-	 * @param sun to orbit
-	 * @return announcements for the user
-	 */
 	public String orbitSun(Sun sun){
 		String ret = "Command Added!";
 		if(state == ShipStates.FLYING){
@@ -84,12 +80,6 @@ public class Ship {
 		}
 		return ret;
 	}
-	/**
-	 * Set the planet we would like to orbit
-	 * 
-	 * @param plan planet to orbit
-	 * @return announcements for the user
-	 */
 	public String orbitPlanet(Planet plan){
 		String ret = "Command Added!";
 		
@@ -103,19 +93,9 @@ public class Ship {
 		
 		return ret;
 	}
-	/**
-	 * Sets the ships state
-	 * 
-	 * @param state to be set to
-	 */
 	public void setState(ShipStates state){
 		this.state = state;
 	}
-	/**
-	 * Gets the current state of the ship.
-	 * 
-	 * @return ships state
-	 */
 	public ShipStates getState(){
 		return state;
 	}
@@ -204,10 +184,12 @@ public class Ship {
 		Planet p;
 		double amount, obtained;
 		
+		
 		if(commandList.size()>0){
 			Object[] currCommand = commandList.get(0);
 			
 			String command = (String) currCommand[0];
+			
 			
 			switch(command){
 			case "Mine":
@@ -270,20 +252,51 @@ public class Ship {
 				
 				break;
 			case "Move":
+				
+				
+				//this is so it captures the initial distance only right away, because if these values update it would change the speed of our ship
+				if(counter == 0){
+					initialXDistance = (int)coorX;
+					initialYDistance = (int)coorY;
+				}
 				if(state.canMoveSector()){
+					//calculates where the x and y coordinate we clicked on are
 					int x = ((int[])currCommand[1])[0], y = ((int[])currCommand[1])[1];
 					amount = (double)currCommand[2];
-
-					coorX += (int)coorX<x?amount:(int)coorX>x?-amount:0;
-					coorY += (int)coorY<y?amount:(int)coorY>y?-amount:0;
+					
+					//slope of our line
+					double slope = ((double)y-(int)coorY)/((double)x-(int)coorX);
+					
+					//moves the x and y to their distance if we are less than 1 movement away
+					if(slope*amount/20>((coorY-y)/(coorX-x))){
+						coorX = x;
+						coorY = y;
+					}
+					else if ((int)coorX!=x)
+					{
+						coorX += (x-initialXDistance)* amount/20;
+						coorY += (y-initialYDistance) *amount/20;
+					}
+					
+//					if((int)coorY<y){
+//						coorY += amount;
+//					}
+//					else if ((int)coorY>x)
+//					{
+//						coorY += -amount;
+//					}
+//					else{		
+//						coorY +=0;
+//					}
 
 					if((int)coorX==x&&(int)coorY==y){
 						commandList.remove(currCommand);
 					}
+					
 				}else{
 					commandList.remove(currCommand);
 				}
-				
+				counter++;
 				break;
 			case "Land":
 				if(state.canLand()){
