@@ -15,12 +15,16 @@ public class Planet extends GameObject{
 	private double density;
 	private Random ran;
 	private final String TYPE = "PLANET";
+	private String name;
+	private NameGenerator nameMaker;
 	/**
 	 * Constructor for the planets initialization.
 	 */
 	public Planet(int id){
+		nameMaker = new NameGenerator();
 		ran = new Random();
 		this.id = id;
+		name = nameMaker.getRandomName();
 		hasLife = ran.nextBoolean();
 		isAlive = hasLife?true:false;
 		hasAtmosphere = hasLife?true:ran.nextBoolean(); //if the planet has life then we should have an atmosphere...
@@ -100,8 +104,8 @@ public class Planet extends GameObject{
 	public String toString(){
 		String ret = "";
 		
-		ret = String.format("Planet [id = %2s, hasLife = %5s, hasAtmosphere = %5s, isAlive = %5s, ore = %5s, oxygen = %6s]\n", 
-				id, hasLife, hasAtmosphere, isAlive, ore, oxygen);
+		ret = String.format("Planet [id = %-2s, name = %-15s, hasLife = %-5s, hasAtmosphere = %-5s, isAlive = %-5s, ore = %-5s, oxygen = %-6s]\n", 
+				id, name, hasLife, hasAtmosphere, isAlive, ore, oxygen);
 		
 		return ret;
 	}

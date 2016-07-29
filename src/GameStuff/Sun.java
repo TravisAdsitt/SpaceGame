@@ -46,7 +46,7 @@ public class Sun extends GameObject{
 	public String toString(){
 		String ret = "";
 		
-		ret = String.format("Sun [hydrogen = %10s, lightAmount = %3s]\n", hydrogen, lightAmount);
+		ret = String.format("Sun [hydrogen = %-10s, lightAmount = %-3s]\n", hydrogen, lightAmount);
 		
 		
 		return ret;

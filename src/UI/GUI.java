@@ -3,6 +3,7 @@ package UI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
@@ -107,8 +109,11 @@ public class GUI extends JPanel{
 		}
 		
 		shipList = new JList<String>(ships);
+		shipList.setFont(new Font("monospaced", Font.PLAIN, 12));
 		shipList.setSelectedIndex(0);
-		shipList.setPreferredSize(new Dimension(600,100));
+		JScrollPane shipScroll = new JScrollPane();
+		shipScroll.add(shipList);
+		shipScroll.setPreferredSize(new Dimension(500,200));
 		
 		for(ArrayList<GameObject> i : universe.getSector(fleets.get(0).getShip(shipList.getSelectedIndex()).getX(), fleets.get(0).getShip(shipList.getSelectedIndex()).getY()).getSubordinateObjectArrayLists()){
 			for(GameObject o : i){
@@ -117,6 +122,7 @@ public class GUI extends JPanel{
 		}
 		
 		sectorObjectList = new JList<String>(objects);
+		sectorObjectList.setFont(new Font("monospaced", Font.PLAIN, 12));
 		sectorObjectList.setPreferredSize(new Dimension(600,100));
 		sectorObjectList.addListSelectionListener(new ObjectListListener());
 		
