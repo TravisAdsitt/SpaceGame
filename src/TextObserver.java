@@ -10,7 +10,7 @@ public class TextObserver implements Observer{
 	}
 	@Override
 	public void update(Observable obs, Object obj) {
-		System.out.println(obj.getClass().getName());
+		System.out.println(obj);
 		System.out.println("Got something!");
 	}
 

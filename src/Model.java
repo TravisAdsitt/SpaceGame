@@ -36,7 +36,9 @@ public class Model extends Observable{
 	 
 	 topModel.put(key, value);
 	 
-	 hasChanged();
+	 notifyObservers(key);
+	 
+	 setChanged();
  }
  
  /**
