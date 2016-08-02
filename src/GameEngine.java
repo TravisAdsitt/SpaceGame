@@ -1,5 +1,6 @@
 import java.awt.Point;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 
@@ -20,8 +21,10 @@ public class GameEngine {
 		
 		Player player = new Player(JOptionPane.showInputDialog("What is your name captain?"));
 		Ship playersShip = new Ship(player,playersShipName,new Point(0,0),null);
+		
 		player.setShip(playersShip);
 		gameModel.addShip(playersShip);
+		gameModel.setKey("currPlayer", player);
 		
 		gameModel.addPlayer(player);
 		
@@ -29,11 +32,12 @@ public class GameEngine {
 		
 		//System.out.println(gameModel.getShipById(playersShipName).getClass().getName());
 		
-		while(true){
-			String key = JOptionPane.showInputDialog("Key to change:");
-			String value = JOptionPane.showInputDialog("Value:");
-			
-			gameModel.setKey(key, value);
-		}
+		JFrame gameWindow = new JFrame();
+		gameWindow.add(new MapView(gameModel));
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.pack();
+		gameWindow.setVisible(true);
+		
+		
 	}
 }

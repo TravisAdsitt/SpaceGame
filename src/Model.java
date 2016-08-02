@@ -31,7 +31,21 @@ public class Model extends Observable{
 	 topModel = new HashMap();
  }
  
- public void setKey(String key, String value){
+ public Sector[][] getUniverseSectorArray(){
+	 int gridSize = (int) Math.ceil(Math.sqrt(universe.size()));
+	 
+	 Sector[][] ret = new Sector[gridSize][gridSize];
+	 
+	 for(int y = 0; y<gridSize ; y++){
+		 for(int x = 0; x<gridSize ; x++){
+			 ret[x][y] = universe.get(gridSize*y+x);
+		 }
+	 }
+	 
+	 return ret;
+ }
+ 
+ public void setKey(String key, Object value){
 	 
 	 
 	 topModel.put(key, value);
@@ -39,6 +53,12 @@ public class Model extends Observable{
 	 notifyObservers(key);
 	 
 	 setChanged();
+ }
+ 
+ public Player getCurrentPlayer(){
+	 
+	 return (Player) topModel.get("currPlayer");
+	 
  }
  
  /**

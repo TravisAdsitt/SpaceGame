@@ -24,19 +24,10 @@ import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import GameStuff.Fleet;
-import GameStuff.GameObject;
-import GameStuff.Planet;
-import GameStuff.Ship;
-import GameStuff.ShipStates;
-import GameStuff.SolarSystem;
-import GameStuff.Sun;
-import GameStuff.Universe;
-import Models.Model;
 /**
  * This is used for the handling of all GUI stuff... At this moment it does a lot of game enginy stuff.
  * 
- * TODO: I think that we need to add states to the game... might require some rewritting :(
+ * 
  * 
  * @author Travis Adsitt
  *
@@ -57,11 +48,6 @@ public class GUI extends JPanel implements Observer{
 	public GUI(Model model){
 		
 		gameModel = model;
-		
-		
-		systemSelected = false;
-		 
-		listObjects = new ArrayList<GameObject>();
 		
 		initCenterPanel();
 		initEastPanel();
@@ -92,7 +78,7 @@ public class GUI extends JPanel implements Observer{
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
 		
-		map = new MapView(universe.getUniverseData(),fleets.get(0).getFleet());
+		map = new MapView(gameModel);
 		centerPanel.add(map);
 		
 	}
@@ -110,9 +96,7 @@ public class GUI extends JPanel implements Observer{
 		DefaultListModel<String> ships = new DefaultListModel<String>();
 		DefaultListModel<String> objects = new DefaultListModel<String>();
 		
-		for(String i : fleets.get(0).getFleetArray()){
-			ships.addElement(i);
-		}
+		
 		
 		shipList = new JList<String>(ships);
 		shipList.setFont(new Font("monospaced", Font.PLAIN, 12));
@@ -121,11 +105,7 @@ public class GUI extends JPanel implements Observer{
 		shipScroll.add(shipList);
 		shipScroll.setPreferredSize(new Dimension(500,200));
 		
-		for(ArrayList<GameObject> i : universe.getSector(fleets.get(0).getShip(shipList.getSelectedIndex()).getX(), fleets.get(0).getShip(shipList.getSelectedIndex()).getY()).getSubordinateObjectArrayLists()){
-			for(GameObject o : i){
-				listObjects.add(o);
-			}
-		}
+		
 		
 		sectorObjectList = new JList<String>(objects);
 		sectorObjectList.setFont(new Font("monospaced", Font.PLAIN, 12));
@@ -184,7 +164,7 @@ public class GUI extends JPanel implements Observer{
 	@SuppressWarnings("unchecked")
 	public void update(){
 		
-		map.update(fleets.get(0).getFleet());
+		/*map.update(fleets.get(0).getFleet());
 		
 		
 		//==========Ship List Update Section==========
@@ -265,7 +245,7 @@ public class GUI extends JPanel implements Observer{
 			break;
 		}
 		
-		
+		*/
 		
 	}
 	public void leaveSystem(){
@@ -303,7 +283,7 @@ public class GUI extends JPanel implements Observer{
 				
 				break;
 			case"Exit System":
-				leaveSystem();
+				
 				break;
 			}
 

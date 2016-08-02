@@ -1,4 +1,4 @@
-package UI;
+
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,8 +12,6 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
-import GameStuff.Sector;
-import GameStuff.Ship;
 /**
  * This is to handle the drawing of the map and the highlighted squares.
  * 
@@ -33,10 +31,13 @@ public class MapView extends JPanel{
 	private ArrayList<Ship> ships;
 	private ArrayList<int[]> hCoor;
 	private boolean rightClicked;
+	private Model gameModel;
 	
-	public MapView(Sector[][] mapData, ArrayList<Ship> ships){
-		this.mapData = mapData;
-		this.ships = ships;
+	public MapView(Model gameModel){
+		this.gameModel = gameModel;
+		
+		this.mapData = gameModel.getUniverseSectorArray();
+		this.ships = gameModel.getCurrentPlayer().getShips();
 		
 		hCoor = new ArrayList<int[]>();
 		
@@ -55,23 +56,6 @@ public class MapView extends JPanel{
 		this.addMouseListener(new MouseMapListener());
 		
 	}
-	
-	/**
-	 * Get the highlighted squares x value.
-	 * 
-	 * @return highlighted squares x value.
-	 */
-	public int getHX(){
-		return hX;
-	}
-	/**
-	 * Get the highlighted squares y value.
-	 * 
-	 * @return highlighted squares y value.
-	 */
-	public int getHY(){
-		return hY;
-	}
 	/**
 	 * Returns an object with the coordinates of a command if there was a right click event on the map
 	 * @return int[] object with coordinates in it
@@ -80,8 +64,8 @@ public class MapView extends JPanel{
 		int[] ret = new int[2];
 		
 		if(rightClicked){
-			ret[0] = getHX();
-			ret[1] = getHY();
+			ret[0] = hX;
+			ret[1] = hY;
 		}else{
 			ret[0] = -1;
 			ret[1] = -1;
@@ -110,8 +94,9 @@ public class MapView extends JPanel{
 		for(Ship s : ships){
 			int[] sH = new int[3];
 			
-			sH[0] = s.getX();
-			sH[1] = s.getY();
+			
+			sH[0] = s.getCoor().x;
+			sH[1] = s.getCoor().y;
 			sH[2] = 1;
 			
 			hCoor.add(sH);
@@ -137,7 +122,7 @@ public class MapView extends JPanel{
 				
 				Random sectorRan = new Random(Integer.parseInt(x+""+y));
 				
-				int numStars = mapData[x/BLOCK_SIDE][y/BLOCK_SIDE].getNumSolarSystem();
+				int numStars = mapData[x/BLOCK_SIDE][y/BLOCK_SIDE].getAllSolarSystems().size();
 				
 				g.setColor(Color.black);
 				
@@ -183,6 +168,8 @@ public class MapView extends JPanel{
 			switch(arg0.getButton()){
 			case 3:
 				rightClicked = true;
+				refreshHighlights();
+				repaint();
 				break;
 			}
 			
