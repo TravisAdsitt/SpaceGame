@@ -19,21 +19,22 @@ public class GameEngine {
 		String playersShipName = names.getRandomName();
 		
 		
+		
 		Player player = new Player(JOptionPane.showInputDialog("What is your name captain?"));
 		Ship playersShip = new Ship(player,playersShipName,new Point(0,0),null);
 		
 		player.setShip(playersShip);
 		gameModel.addShip(playersShip);
-		gameModel.setKey("currPlayer", player);
 		
+		gameModel.setKey("currPlayer", player);
 		gameModel.addPlayer(player);
 		
-		TextObserver to = new TextObserver(gameModel);
 		
+		Controller gameControl = new Controller(gameModel);
 		//System.out.println(gameModel.getShipById(playersShipName).getClass().getName());
 		
 		JFrame gameWindow = new JFrame();
-		gameWindow.add(new MapView(gameModel));
+		gameWindow.add(new GUI(gameModel));
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameWindow.pack();
 		gameWindow.setVisible(true);

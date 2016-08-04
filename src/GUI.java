@@ -65,8 +65,6 @@ public class GUI extends JPanel implements Observer{
 		
 		add(superPanel);
 		
-		Timer tmr = new Timer(100,new RefreshGUI());
-		tmr.start();
 		
 		
 	}
@@ -78,7 +76,7 @@ public class GUI extends JPanel implements Observer{
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
 		
-		map = new MapView(gameModel);
+		map = new MapView(gameModel, new CoordinateListener());
 		centerPanel.add(map);
 		
 	}
@@ -89,14 +87,13 @@ public class GUI extends JPanel implements Observer{
 		JLabel shipListLabel = new JLabel("Ships", SwingConstants.CENTER);
 		JLabel objectSectorListLabel = new JLabel("Objects", SwingConstants.CENTER);
 		
-		
-		
-		
-		
 		DefaultListModel<String> ships = new DefaultListModel<String>();
 		DefaultListModel<String> objects = new DefaultListModel<String>();
 		
 		
+		for(Ship s : gameModel.getCurrentPlayer().getShips()){
+			ships.addElement(s.toString());
+		}
 		
 		shipList = new JList<String>(ships);
 		shipList.setFont(new Font("monospaced", Font.PLAIN, 12));
@@ -153,7 +150,7 @@ public class GUI extends JPanel implements Observer{
 		westPanel.setLayout(new BoxLayout(westPanel,BoxLayout.Y_AXIS));
 		
 		announcements = new JLabel();
-		announcements.setPreferredSize(new Dimension(500,200));
+		announcements.setPreferredSize(new Dimension(300,200));
 		
 		westPanel.add(announcements);
 		
@@ -218,26 +215,27 @@ public class GUI extends JPanel implements Observer{
 			listObjects.clear();
 			
 		}
+		*/
 		//==========Buttons Panel=====================
-		switch(fleets.get(0).getShip(shipList.getSelectedIndex()).getState()){
-		case ShipStates.FLYING:
+		switch(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getState()){
+		case FLYING:
 			buttons.removeAll();
 			if(systemSelected){
 				buttons.add(exitSystem);
 			}
 			
 			break;
-		case ShipStates.ORBITING_PLANET:
+		case ORBITING_PLANET:
 			buttons.removeAll();
 			buttons.add(land);
 			buttons.add(exitorbit);
 			break;
-		case ShipStates.ORBITING_SUN:
+		case ORBITING_SUN:
 			buttons.removeAll();
 			buttons.add(vac);
 			buttons.add(exitorbit);
 			break;
-		case ShipStates.LANDED:
+		case LANDED:
 			buttons.removeAll();
 			buttons.add(takeoff);
 			buttons.add(mine);
@@ -245,7 +243,7 @@ public class GUI extends JPanel implements Observer{
 			break;
 		}
 		
-		*/
+		
 		
 	}
 	public void leaveSystem(){
@@ -292,18 +290,27 @@ public class GUI extends JPanel implements Observer{
 		
 	}
 	//private class RefreshGUI implements Action
-	private class RefreshGUI implements ActionListener{
+	private class CoordinateListener implements ActionListener{
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			update();
-			
+		public void actionPerformed(ActionEvent e){
+			gameModel.addCommand("Move", map.getComCoord(), gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()));
+			System.out.println(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getId());
 		}
 		
 	}
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
+		String change = (arg1 instanceof String)?(String)arg1:null;
+		
+		if(change!=null){
+			switch(change){
+			case"SHIPMOVED":
+				map.refreshHighlights();
+				shipList.invalidate();
+				break;
+			}
+		}
 		
 	}
 

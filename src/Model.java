@@ -13,6 +13,7 @@ public class Model extends Observable{
  private ArrayList<Planet> planets;
  private ArrayList<Sun> suns;
  private ArrayList<Player> players;
+ private ArrayList<Object[]> commands;
  public int numSolar, numPlan, numSun;
  
  public Model(){
@@ -22,6 +23,8 @@ public class Model extends Observable{
 	 planets = new ArrayList<Planet>();
 	 players = new ArrayList<Player>();
 	 suns = new ArrayList<Sun>();
+	 commands = new ArrayList<Object[]>();
+	 
 	 
 	 numSun = 0;
 	 numPlan = 0;
@@ -51,16 +54,20 @@ public class Model extends Observable{
 	 topModel.put(key, value);
 	 
 	 notifyObservers(key);
-	 
 	 setChanged();
+	 
  }
- 
+ public Object[] getCurrentCommand(){
+	 return commands.get(0);
+ }
  public Player getCurrentPlayer(){
 	 
 	 return (Player) topModel.get("currPlayer");
 	 
  }
- 
+ public boolean hasNextCommand(){
+	 return commands.size()>0?true:false;
+ }
  /**
 	 * Returns an ArrayList of Players who are not the player provided
 	 * @param player the player to exclude from the list
@@ -92,6 +99,7 @@ public class Model extends Observable{
  public void addPlayer(Player  player){
 	 if(!topModel.containsKey(player.getName())){
 		 players.add(player);
+		 setKey("currPlayer",player);
 	 }
  }
  public void addSector(Sector sector){
@@ -101,30 +109,10 @@ public class Model extends Observable{
 	 ships.add(ship);
 	 topModel.put("SHIP" + ship.getId(), ship);
  }
- //TODO I forsee a bug here, what if two ships have the same ID? (Also if those ships are owned by different people)
- public Ship getShipById(String id){
-	 Ship ret = null;
-	 
-	 if(topModel.get("SHIP" + id) instanceof Ship){
-		 ret = (Ship) topModel.get("SHIP" + id);
-		 }
-	 
-	 return ret;
- }
  public void addSolarSystem(SolarSystem solarSystem){
 	 numSolar++;
 	 solarSystems.add(solarSystem);
 	 topModel.put("SOLARSYSTEM" + solarSystem.getId(), solarSystem);
- }
- public SolarSystem getSolarSystemById(String id){
-	 SolarSystem ret = null;
-	 
-	 if(topModel.get("SOLARSYSTEM" + id) instanceof SolarSystem){
-		 ret = (SolarSystem) topModel.get("SOLARSYSTEM" + id);
-	 }
-	 
-	 return ret;
-	 
  }
  public void addSun(Sun sun){
 	 numSun++;
@@ -136,15 +124,14 @@ public class Model extends Observable{
 	 planets.add(planet);
 	 topModel.put("PLANET" + planet.getId(), planet);
  }
- public Planet getPlanetId(String id){
-	 Planet ret = null;
+ public void addCommand(String commandString, Object obj1, Object obj2){
+	 Object[] command = new Object[3];
 	 
-	 if(topModel.get(id) instanceof Planet){
-		 ret = (Planet) topModel.get(id);
-	 }
+	 command[0] = commandString;
+	 command[1] = obj1;
+	 command[2] = obj2;
 	 
-	 return ret;
+	 commands.add(command);
+	 
  }
- 
- 
 }

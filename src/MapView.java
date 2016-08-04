@@ -3,6 +3,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -32,10 +33,11 @@ public class MapView extends JPanel{
 	private ArrayList<int[]> hCoor;
 	private boolean rightClicked;
 	private Model gameModel;
+	private ActionListener al;
 	
-	public MapView(Model gameModel){
+	public MapView(Model gameModel, ActionListener al){
 		this.gameModel = gameModel;
-		
+		this.al = al;
 		this.mapData = gameModel.getUniverseSectorArray();
 		this.ships = gameModel.getCurrentPlayer().getShips();
 		
@@ -60,17 +62,12 @@ public class MapView extends JPanel{
 	 * Returns an object with the coordinates of a command if there was a right click event on the map
 	 * @return int[] object with coordinates in it
 	 */
-	public int[] getComCoord(){
-		int[] ret = new int[2];
+	public Point getComCoord(){
+		Point ret = null;
 		
 		if(rightClicked){
-			ret[0] = hX;
-			ret[1] = hY;
-		}else{
-			ret[0] = -1;
-			ret[1] = -1;
+			ret = new Point(hX,hY);
 		}
-		
 		
 		hX = hY = -1;
 		rightClicked = false;
@@ -80,7 +77,7 @@ public class MapView extends JPanel{
 	/**
 	 * Used to refresh the highlighted squares on the map
 	 */
-	public synchronized void refreshHighlights(){
+	public void refreshHighlights(){
 		hCoor.clear();
 		
 		int[] coor = new int[3]; 
@@ -159,15 +156,16 @@ public class MapView extends JPanel{
 	
 	private class MouseMapListener implements MouseListener{
 
-		public void mouseClicked(MouseEvent arg0) {
-			hX = (int) arg0.getPoint().getX()/BLOCK_SIDE;
-			hY = (int) arg0.getPoint().getY()/BLOCK_SIDE;
+		public void mouseClicked(MouseEvent event) {
+			hX = (int) event.getPoint().getX()/BLOCK_SIDE;
+			hY = (int) event.getPoint().getY()/BLOCK_SIDE;
 			
 			//System.out.println(mapData[hX][hY].getNumSolarSystem());
 			
-			switch(arg0.getButton()){
+			switch(event.getButton()){
 			case 3:
 				rightClicked = true;
+				al.actionPerformed(new ActionEvent("", 0, "Not sure what to put in here..."));
 				refreshHighlights();
 				repaint();
 				break;
@@ -176,21 +174,25 @@ public class MapView extends JPanel{
 			repaint();
 		}
 
+		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@Override
 		public void mousePressed(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			

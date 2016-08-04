@@ -8,7 +8,6 @@ public class Planet extends GameObject{
 	private boolean hasLife, isAlive, hasAtmosphere;
 	private int ore, oxygen;
 	private double density;
-	private final String TYPE = "PLANET";
 	
 	public Planet(SolarSystem owner, String id){
 		Random ran = new Random();
@@ -21,6 +20,48 @@ public class Planet extends GameObject{
 		oxygen = hasAtmosphere?ran.nextInt(MAX_OXYGEN) + 1:0; //if we have an atmosphere then we need to have oxygen...
 		ore = ran.nextInt(MAX_ORE) + 1; //set the ore available on the planet...
 		density = ran.nextDouble(); //set the density of the planet...
+	}
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @return the hasLife
+	 */
+	public boolean isHasLife() {
+		return hasLife;
+	}
+	/**
+	 * @return the isAlive
+	 */
+	public boolean isAlive() {
+		return isAlive;
+	}
+	/**
+	 * @return the hasAtmosphere
+	 */
+	public boolean isHasAtmosphere() {
+		return hasAtmosphere;
+	}
+	/**
+	 * @return the ore
+	 */
+	public int getOre() {
+		return ore;
+	}
+	/**
+	 * @return the oxygen
+	 */
+	public int getOxygen() {
+		return oxygen;
+	}
+	/**
+	 * @return the density
+	 */
+	public double getDensity() {
+		return density;
 	}
 	public String toString(){
 		String ret = "";
