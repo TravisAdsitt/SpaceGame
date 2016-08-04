@@ -17,39 +17,39 @@ public class Controller {
 	}
 	public void game(){
 		if(gameModel.hasNextCommand() && currCommand == null){
+			System.out.println("Command recieved!");
 			currCommand = gameModel.getCurrentCommand();
-			commandSection();
+			gameModel.removeCurrentCommand();
 		}else if(currCommand != null){
 			commandSection();
 		}
 
 	}
 	public void commandSection(){
-		String commandString = "";
+		Commands commandString = null;
 
-		if(currCommand[0] instanceof String){
-			commandString = (String) currCommand[0];
+		if(currCommand[0] instanceof Commands){
+			commandString = (Commands) currCommand[0];
 
 			switch(commandString){
-			case "Move":
+			case MoveShip:
 				Point dest = (currCommand[1] instanceof Point)?(Point)currCommand[1]:null;
 				Ship toMove = (currCommand[2] instanceof Ship)?(Ship)currCommand[2]:null;
 
 				if(dest!=null&&toMove!=null){
-					if(toMove.getCoor() != dest){
+					if(!toMove.getCoor().equals(dest)){
 						toMove.setState(ShipStates.FLYING);
 						
-						int x = toMove.getCoor().x + toMove.getCoor().x>dest.x?-1:toMove.getCoor().x<dest.x?1:0;
-						int y = toMove.getCoor().y + toMove.getCoor().y>dest.y?-1:toMove.getCoor().y<dest.y?1:0;
+						int x = toMove.getCoor().x + (toMove.getCoor().x>dest.x?-1:toMove.getCoor().x<dest.x?1:0);
+						int y = toMove.getCoor().y + (toMove.getCoor().y>dest.y?-1:toMove.getCoor().y<dest.y?1:0);
 						
 						toMove.setCoor(new Point(x,y));
-						
 						gameModel.setKey("SHIPMOVED", toMove);
-						System.out.println("We are moving!" + toMove.getId() + toMove.getCoor().getX() + toMove.getCoor().getY());
 						
 						
 					}else{
 						toMove.setState(ShipStates.IDLE);
+						currCommand = null;
 						gameModel.setKey("SHIPMOVED", toMove);
 					}
 				}

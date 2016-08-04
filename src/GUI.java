@@ -48,6 +48,7 @@ public class GUI extends JPanel implements Observer{
 	public GUI(Model model){
 		
 		gameModel = model;
+		gameModel.addObserver(this);
 		
 		initCenterPanel();
 		initEastPanel();
@@ -161,26 +162,8 @@ public class GUI extends JPanel implements Observer{
 	@SuppressWarnings("unchecked")
 	public void update(){
 		
-		/*map.update(fleets.get(0).getFleet());
-		
-		
-		//==========Ship List Update Section==========
-		DefaultListModel<String> list = new DefaultListModel<String>();
-		
-		for(String i : fleets.get(0).getFleetArray()){
-			list.addElement(i);
-		}
-		
-		int tempIndex = shipList.getSelectedIndex();
-		
-		selectedShip = fleets.get(0).getShip(tempIndex);
-		
-		shipList.setModel(list);
-		
-		shipList.setSelectedIndex(tempIndex);
-		
 		//==========Sector List Update Section=========
-		DefaultListModel<String> objects = new DefaultListModel<String>();
+		/*DefaultListModel<String> objects = new DefaultListModel<String>();
 		
 		
 		if(listObjects.size()==0){
@@ -294,14 +277,16 @@ public class GUI extends JPanel implements Observer{
 
 		@Override
 		public void actionPerformed(ActionEvent e){
-			gameModel.addCommand("Move", map.getComCoord(), gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()));
-			System.out.println(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getId());
+			gameModel.addCommand(Commands.MoveShip, map.getComCoord(), gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()));
+			System.out.println("Command added!");
 		}
 		
 	}
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String change = (arg1 instanceof String)?(String)arg1:null;
+		
+		System.out.println("Gui Knows you moved!");
 		
 		if(change!=null){
 			switch(change){

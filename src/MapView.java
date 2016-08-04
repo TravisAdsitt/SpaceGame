@@ -99,7 +99,7 @@ public class MapView extends JPanel{
 			hCoor.add(sH);
 		}
 		
-		
+		repaint();
 	}
 	public void update(ArrayList<Ship> ships){
 		this.ships = ships;
@@ -165,6 +165,7 @@ public class MapView extends JPanel{
 			switch(event.getButton()){
 			case 3:
 				rightClicked = true;
+				System.out.println("Command action sent!");
 				al.actionPerformed(new ActionEvent("", 0, "Not sure what to put in here..."));
 				refreshHighlights();
 				repaint();

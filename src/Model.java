@@ -49,51 +49,52 @@ public class Model extends Observable{
  }
  
  public void setKey(String key, Object value){
-	 
-	 
 	 topModel.put(key, value);
 	 
 	 notifyObservers(key);
 	 setChanged();
-	 
  }
  public Object[] getCurrentCommand(){
 	 return commands.get(0);
  }
+ public void removeCurrentCommand(){
+	 if(commands.size()>0){
+		 commands.remove(0);
+		 System.out.println("Command Removed!");
+	 }
+ }
  public Player getCurrentPlayer(){
-	 
 	 return (Player) topModel.get("currPlayer");
-	 
  }
  public boolean hasNextCommand(){
 	 return commands.size()>0?true:false;
  }
  /**
-	 * Returns an ArrayList of Players who are not the player provided
-	 * @param player the player to exclude from the list
-	 * @return ArrayList of ships not owned by the player provided
-	 */
-	public ArrayList<Ship> getAllButOwnersShips(Player player){
-		ArrayList<Ship> ret = new ArrayList<Ship>();
-		
-		for(Ship s : ships){ //Does this reference the original object?
-			Player shipOwner = s.getOwner();
-			
-			if(player != shipOwner){
-				ret.add(s);
-			}
-		}
-		
-		return ret;
-	}
- 
+  * Returns an ArrayList of Players who are not the player provided
+  * @param player the player to exclude from the list
+  * @return ArrayList of ships not owned by the player provided
+  */
+ public ArrayList<Ship> getAllButOwnersShips(Player player){
+	 ArrayList<Ship> ret = new ArrayList<Ship>();
+
+	 for(Ship s : ships){ //Does this reference the original object?
+		 Player shipOwner = s.getOwner();
+
+		 if(player != shipOwner){
+			 ret.add(s);
+		 }
+	 }
+
+	 return ret;
+ }
+
  public ArrayList<SolarSystem> getSolarSystemsInSector(Point coor){
 	 ArrayList<SolarSystem> ret = null;
-	 
+
 	 if(coor.x*coor.y < universe.size()){
 		 ret = universe.get(coor.x*coor.y).getAllSolarSystems();
 	 }
-		 
+
 	 return ret;
  }
  public void addPlayer(Player  player){
@@ -124,10 +125,10 @@ public class Model extends Observable{
 	 planets.add(planet);
 	 topModel.put("PLANET" + planet.getId(), planet);
  }
- public void addCommand(String commandString, Object obj1, Object obj2){
+ public void addCommand(Commands commandEnum, Object obj1, Object obj2){
 	 Object[] command = new Object[3];
 	 
-	 command[0] = commandString;
+	 command[0] = commandEnum;
 	 command[1] = obj1;
 	 command[2] = obj2;
 	 
