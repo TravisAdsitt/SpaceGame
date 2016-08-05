@@ -17,8 +17,8 @@ public class Controller {
 	}
 	public void game(){
 		if(gameModel.hasNextCommand() && currCommand == null){
-			System.out.println("Command recieved!");
 			currCommand = gameModel.getCurrentCommand();
+			if(gameModel.debugMode())System.out.println("Controller recieved the command " + ((Commands)currCommand[0]) + "!");
 			gameModel.removeCurrentCommand();
 		}else if(currCommand != null){
 			commandSection();
@@ -43,20 +43,34 @@ public class Controller {
 						int x = toMove.getCoor().x + (toMove.getCoor().x>dest.x?-1:toMove.getCoor().x<dest.x?1:0);
 						int y = toMove.getCoor().y + (toMove.getCoor().y>dest.y?-1:toMove.getCoor().y<dest.y?1:0);
 						
+						moveShipFromToSector(toMove,toMove.getCoor(),new Point(x,y));
 						toMove.setCoor(new Point(x,y));
-						gameModel.setKey("SHIPMOVED", toMove);
 						
+						gameModel.setKey("SHIPMOVED", toMove);
 						
 					}else{
 						toMove.setState(ShipStates.IDLE);
 						currCommand = null;
-						gameModel.setKey("SHIPMOVED", toMove);
+						gameModel.setKey("SHIPMOVECOMPLETE", toMove);
+						if(gameModel.debugMode())System.out.println("Finished moving!");
 					}
 				}
 				break;
 			}
 		}
 		
+		
+	}
+	public void moveShipFromToSector(Ship ship, Point from, Point to){
+		Sector fromSector = gameModel.getSector(from),
+				toSector = gameModel.getSector(to);
+		
+		fromSector.removeShip(ship);
+		toSector.setShip(ship);
+		
+		if(gameModel.debugMode())System.out.println("There was a Ship object moved from Sector: " + 
+		fromSector.getCoor().x + "," + fromSector.getCoor().y + " To: " +
+		toSector.getCoor().x + "," + toSector.getCoor().y);
 		
 	}
 	public void enterSolarSystem(Ship ship, SolarSystem solarSystem){

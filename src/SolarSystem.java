@@ -20,6 +20,9 @@ public class SolarSystem extends GameObject{
 		initSolarSystem(model);
 	}
 	
+	public ArrayList<Planet> getPlanets(){
+		return planets;
+	}
 	
 	
 	public void initSolarSystem(Model model){

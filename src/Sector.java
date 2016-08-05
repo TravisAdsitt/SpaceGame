@@ -19,7 +19,14 @@ public class Sector extends GameObject{
 	}
 	
 	
-	
+	public void removeShip(Ship ship){
+		ships.remove(ship);
+	}
+	public void setShip(Ship ship){
+		if(!ships.contains(ship)){
+			ships.add(ship);
+		}
+	}
 	public ArrayList<SolarSystem> getAllSolarSystems(){
 		return solarSystems;
 	}

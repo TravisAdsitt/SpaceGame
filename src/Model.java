@@ -1,6 +1,7 @@
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Observable;
 
 
@@ -14,7 +15,7 @@ public class Model extends Observable{
  private ArrayList<Sun> suns;
  private ArrayList<Player> players;
  private ArrayList<Object[]> commands;
- public int numSolar, numPlan, numSun;
+ private int gridSize;
  
  public Model(){
 	 ships = new ArrayList<Ship>();
@@ -24,16 +25,9 @@ public class Model extends Observable{
 	 players = new ArrayList<Player>();
 	 suns = new ArrayList<Sun>();
 	 commands = new ArrayList<Object[]>();
-	 
-	 
-	 numSun = 0;
-	 numPlan = 0;
-	 numSolar = 0;
-	 
-	 
 	 topModel = new HashMap();
  }
- 
+
  public Sector[][] getUniverseSectorArray(){
 	 int gridSize = (int) Math.ceil(Math.sqrt(universe.size()));
 	 
@@ -44,10 +38,14 @@ public class Model extends Observable{
 			 ret[x][y] = universe.get(gridSize*y+x);
 		 }
 	 }
-	 
 	 return ret;
  }
- 
+ public Sector getSector(Point sectorCoor){
+	 return universe.get(99*sectorCoor.y+sectorCoor.x);
+ }
+ public void setGridSize(int gridSize){
+	 this.gridSize = gridSize;
+ }
  public void setKey(String key, Object value){
 	 topModel.put(key, value);
 	 
@@ -60,7 +58,7 @@ public class Model extends Observable{
  public void removeCurrentCommand(){
 	 if(commands.size()>0){
 		 commands.remove(0);
-		 System.out.println("Command Removed!");
+		 if(debugMode())System.out.println("Command Removed!");
 	 }
  }
  public Player getCurrentPlayer(){
@@ -69,6 +67,7 @@ public class Model extends Observable{
  public boolean hasNextCommand(){
 	 return commands.size()>0?true:false;
  }
+
  /**
   * Returns an ArrayList of Players who are not the player provided
   * @param player the player to exclude from the list
@@ -97,6 +96,9 @@ public class Model extends Observable{
 
 	 return ret;
  }
+ public boolean debugMode(){
+	 return (boolean) topModel.get("debug");
+ }
  public void addPlayer(Player  player){
 	 if(!topModel.containsKey(player.getName())){
 		 players.add(player);
@@ -111,17 +113,23 @@ public class Model extends Observable{
 	 topModel.put("SHIP" + ship.getId(), ship);
  }
  public void addSolarSystem(SolarSystem solarSystem){
-	 numSolar++;
 	 solarSystems.add(solarSystem);
 	 topModel.put("SOLARSYSTEM" + solarSystem.getId(), solarSystem);
  }
+ public SolarSystem getSolarSystemByID(String id){
+	SolarSystem ret = null;
+	
+	for(SolarSystem s : solarSystems){
+		ret = s.getId().equals(id)?s:ret;
+	}
+	
+	return ret;
+ }
  public void addSun(Sun sun){
-	 numSun++;
 	 suns.add(sun);
 	 topModel.put("SUN" + sun.getId(), sun);
  }
  public void addPlanet(Planet planet){
-	 numPlan++;
 	 planets.add(planet);
 	 topModel.put("PLANET" + planet.getId(), planet);
  }

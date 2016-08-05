@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -37,9 +38,8 @@ public class GUI extends JPanel implements Observer{
 	private Sector[][] universe;
 	private JList<String> shipList, sectorObjectList, systemObjectList;
 	private ArrayList<GameObject> listObjects;
-	private boolean systemSelected;
+	private SolarSystem systemSelected;
 	private JLabel announcements;
-	private Ship selectedShip;
 	private JPanel buttons;
 	private JPanel northPanel, southPanel, eastPanel, westPanel, centerPanel;
 	JButton mine, vac, takeoff, land, exitorbit, exitSystem;
@@ -66,7 +66,7 @@ public class GUI extends JPanel implements Observer{
 		
 		add(superPanel);
 		
-		
+		map.refreshHighlights();
 		
 	}
 	
@@ -90,26 +90,26 @@ public class GUI extends JPanel implements Observer{
 		
 		DefaultListModel<String> ships = new DefaultListModel<String>();
 		DefaultListModel<String> objects = new DefaultListModel<String>();
-		
-		
+
+
 		for(Ship s : gameModel.getCurrentPlayer().getShips()){
 			ships.addElement(s.toString());
 		}
-		
+
 		shipList = new JList<String>(ships);
 		shipList.setFont(new Font("monospaced", Font.PLAIN, 12));
 		shipList.setSelectedIndex(0);
 		JScrollPane shipScroll = new JScrollPane();
 		shipScroll.add(shipList);
 		shipScroll.setPreferredSize(new Dimension(500,200));
-		
-		
-		
+
+		systemSelected = null;
+
 		sectorObjectList = new JList<String>(objects);
 		sectorObjectList.setFont(new Font("monospaced", Font.PLAIN, 12));
 		sectorObjectList.setPreferredSize(new Dimension(600,100));
 		sectorObjectList.addListSelectionListener(new ObjectListListener());
-		
+
 		eastPanel.add(shipListLabel);
 		eastPanel.add(shipList);
 		eastPanel.add(objectSectorListLabel);
@@ -157,53 +157,14 @@ public class GUI extends JPanel implements Observer{
 		
 	}
 	/**
-	 * Used for updating and checking for ship commands.
+	 * Used for updating which buttons should be shown based on the currently selected ships state.
 	 */
 	@SuppressWarnings("unchecked")
-	public void update(){
-		
-		//==========Sector List Update Section=========
-		/*DefaultListModel<String> objects = new DefaultListModel<String>();
-		
-		
-		if(listObjects.size()==0){
-			for(ArrayList<GameObject> i : universe.getSector(fleets.get(0).getShip(tempIndex).getX(),fleets.get(0).getShip(tempIndex).getY()).getSubordinateObjectArrayLists()){
-				for(GameObject l : i){
-					listObjects.add(l);
-				}
-			}
-		}
-		
-		if(listObjects.size()>0){
-			for(GameObject i : listObjects){
-				objects.addElement(i.toString());
-			}
-		}else{
-			objects.addElement("No Objects Here!");
-		}
-		sectorObjectList.setModel(objects);
-		
-		
-		//==========Ship Command Checks and Sends======
-		int[] comCoor = map.getComCoord();
-		
-		if(comCoor[0] != -1&&shipList.getSelectedIndex()>=0&&fleets.get(0).getShip(shipList.getSelectedIndex()).getState().canMoveSector()){
-			
-			Ship shipCom = fleets.get(0).getShip(shipList.getSelectedIndex());
-			
-			announcements.setText(shipCom.moveShip(comCoor[0], comCoor[1]));
-			
-			shipCom.setState(ShipStates.FLYING);
-			
-			listObjects.clear();
-			
-		}
-		*/
-		//==========Buttons Panel=====================
+	public void updateCommandButtonsPanel(){
 		switch(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getState()){
-		case FLYING:
+		case IDLE:
 			buttons.removeAll();
-			if(systemSelected){
+			if(systemSelected!=null){
 				buttons.add(exitSystem);
 			}
 			
@@ -224,25 +185,55 @@ public class GUI extends JPanel implements Observer{
 			buttons.add(mine);
 			buttons.add(vac);
 			break;
+		default:
+			buttons.removeAll();
+			break;
 		}
 		
 		
 		
 	}
-	public void leaveSystem(){
-		
+	/**
+	 * Used to refresh the ship lists model if anything changed.
+	 */
+	private void refreshShipList(){
+		DefaultListModel<String> ships = new DefaultListModel<String>();
+
+		for(Ship s : gameModel.getCurrentPlayer().getShips()){
+			ships.addElement(s.toString());
+		}
+		int selection = shipList.getSelectedIndex();
+		shipList.setModel(ships);
+		shipList.setSelectedIndex(selection);
 	}
-	private class ObjectListListener implements ListSelectionListener
-	{
-		/* (non-Javadoc)
-		 * @see java.awt.event.ListSelectionListener#valueChanged(java.awt.event.ListSelectionEvent)
-		 */
+	/**
+	 * This is to listen for any changes on the objects in sector list. This may get more complicated in the future this is just for the beginning that it is so simplistic.
+	 * 
+	 * @author Travis Adsitt
+	 *
+	 */
+	private class ObjectListListener implements ListSelectionListener{
 		@Override
-		public void valueChanged(ListSelectionEvent event)
-		{
-			
+		public void valueChanged(ListSelectionEvent event){
+			if(systemSelected == null){
+				DefaultListModel<String> objectListRefresh = new DefaultListModel<String>();
+				SolarSystem objectSystem = gameModel.getSolarSystemByID(sectorObjectList.getSelectedValue());
+				
+				for(Planet p : objectSystem.getPlanets()){
+					objectListRefresh.addElement(p.toString());
+				}
+				
+				sectorObjectList.setModel(objectListRefresh);
+				
+			}
 		}
 	}
+	/**
+	 * Dedicated to listening for the command buttons and creating commands for the controller to interpret.
+	 * 
+	 * @author Travis Adsitt
+	 *
+	 */
 	private class ButtonsListener implements ActionListener{
 
 		@Override
@@ -272,27 +263,49 @@ public class GUI extends JPanel implements Observer{
 		}
 		
 	}
-	//private class RefreshGUI implements Action
+	
+	/**
+	 * All this is dedicated to is grabbing the coordinates clicked if the map is rightclicked.
+	 * 
+	 * @author Travis Adsitt
+	 *
+	 */
 	private class CoordinateListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e){
 			gameModel.addCommand(Commands.MoveShip, map.getComCoord(), gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()));
-			System.out.println("Command added!");
+			if(gameModel.debugMode())System.out.println("Command added!");
 		}
 		
 	}
+	
+	/**
+	 * This is the update method used since this class implements observable, this looks at the keys that changed and updates the proper portions of the screen.
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String change = (arg1 instanceof String)?(String)arg1:null;
 		
-		System.out.println("Gui Knows you moved!");
+		if(gameModel.debugMode())System.out.println("Gui Knows you moved!");
 		
 		if(change!=null){
 			switch(change){
 			case"SHIPMOVED":
 				map.refreshHighlights();
-				shipList.invalidate();
+				refreshShipList();
+				break;
+			case"SHIPMOVECOMPLETE":
+				Point sectorCoor = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()>=0?shipList.getSelectedIndex():0).getCoor();
+				DefaultListModel<String> objectListModel = new DefaultListModel<String>();
+				
+				for(SolarSystem s : gameModel.getSector(sectorCoor).getAllSolarSystems()){
+					objectListModel.addElement(s.id);
+				}
+				
+				sectorObjectList.setModel(objectListModel);
+				sectorObjectList.repaint();
+				
 				break;
 			}
 		}

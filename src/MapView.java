@@ -165,7 +165,7 @@ public class MapView extends JPanel{
 			switch(event.getButton()){
 			case 3:
 				rightClicked = true;
-				System.out.println("Command action sent!");
+				if(gameModel.debugMode())System.out.println("Command action sent!");
 				al.actionPerformed(new ActionEvent("", 0, "Not sure what to put in here..."));
 				refreshHighlights();
 				repaint();

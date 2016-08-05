@@ -7,11 +7,19 @@ import javax.swing.JOptionPane;
 public class GameEngine {
 
 	public static void main(String[] args){
+		int gridSize = 99;
+		boolean debug = true;
+		
 		Model gameModel = new Model();
-		for(int x = 0; x<99 ; x++){
-			for(int y = 0; y<99 ; y++){
+		gameModel.setGridSize(gridSize);
+		if(debug)System.out.println("Debugging Enabled!");
+		if(debug)System.out.println("Creating Universe!");
+		for(int x = 0; x<gridSize ; x++){
+			for(int y = 0; y<gridSize ; y++){
 				gameModel.addSector(new Sector(new Point(x,y),gameModel));
+					if(debug)System.out.print("*");
 			}
+			System.out.println();
 			
 		}
 		
@@ -27,6 +35,12 @@ public class GameEngine {
 		gameModel.addShip(playersShip);
 		
 		gameModel.setKey("currPlayer", player);
+		gameModel.setKey("debug",debug);
+		
+		
+		if(gameModel.debugMode())System.out.println("Player " + gameModel.getCurrentPlayer().getName() + " created!");
+		if(gameModel.debugMode())System.out.println("Ship " + playersShip.getId() + " created for Player " + playersShip.getOwner().getName() + "!");
+		
 		gameModel.addPlayer(player);
 		
 		

@@ -17,7 +17,7 @@ public class Ship {
 		this.focusedObject = focusedObject;
 		this.coor = coor;
 		dest = coor;
-		shipState = ShipStates.FLYING;
+		shipState = ShipStates.IDLE;
 		hydrogen = oxygen = ore = 0;
 		level = 1;
 	}
