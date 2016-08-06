@@ -24,7 +24,9 @@ public class SolarSystem extends GameObject{
 		return planets;
 	}
 	
-	
+	public ArrayList<Sun> getSuns(){
+		return suns;
+	}
 	public void initSolarSystem(Model model){
 		Random ran = new Random();
 		

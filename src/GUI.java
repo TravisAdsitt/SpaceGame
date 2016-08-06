@@ -207,6 +207,33 @@ public class GUI extends JPanel implements Observer{
 		shipList.setSelectedIndex(selection);
 	}
 	/**
+	 * Used for updating the objects list
+	 */
+	public void refreshObjectList(){
+		DefaultListModel<String> objectListRefresh = new DefaultListModel<String>();
+		
+		if(systemSelected==null){
+			
+			Sector currentShipSector = gameModel.getSector(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getCoor());
+			
+			for(SolarSystem s : currentShipSector.getAllSolarSystems()){
+				objectListRefresh.addElement(s.id);
+			}
+			
+		}else if(systemSelected != null){
+			
+			for(Sun s : systemSelected.getSuns()){
+				objectListRefresh.addElement(s.toString());
+			}
+			for(Planet p : systemSelected.getPlanets()){
+				objectListRefresh.addElement(p.toString());
+			}
+		}
+		
+		updateCommandButtonsPanel();
+		sectorObjectList.setModel(objectListRefresh);
+	}
+	/**
 	 * This is to listen for any changes on the objects in sector list. This may get more complicated in the future this is just for the beginning that it is so simplistic.
 	 * 
 	 * @author Travis Adsitt
@@ -216,14 +243,9 @@ public class GUI extends JPanel implements Observer{
 		@Override
 		public void valueChanged(ListSelectionEvent event){
 			if(systemSelected == null){
-				DefaultListModel<String> objectListRefresh = new DefaultListModel<String>();
-				SolarSystem objectSystem = gameModel.getSolarSystemByID(sectorObjectList.getSelectedValue());
-				
-				for(Planet p : objectSystem.getPlanets()){
-					objectListRefresh.addElement(p.toString());
-				}
-				
-				sectorObjectList.setModel(objectListRefresh);
+				systemSelected = gameModel.getSolarSystemByID(sectorObjectList.getSelectedValue());
+				refreshObjectList();
+			}else if(systemSelected != null){
 				
 			}
 		}
@@ -255,7 +277,8 @@ public class GUI extends JPanel implements Observer{
 				
 				break;
 			case"Exit System":
-				
+				systemSelected = null;
+				refreshObjectList();
 				break;
 			}
 
@@ -297,14 +320,7 @@ public class GUI extends JPanel implements Observer{
 				break;
 			case"SHIPMOVECOMPLETE":
 				Point sectorCoor = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()>=0?shipList.getSelectedIndex():0).getCoor();
-				DefaultListModel<String> objectListModel = new DefaultListModel<String>();
-				
-				for(SolarSystem s : gameModel.getSector(sectorCoor).getAllSolarSystems()){
-					objectListModel.addElement(s.id);
-				}
-				
-				sectorObjectList.setModel(objectListModel);
-				sectorObjectList.repaint();
+				refreshObjectList();
 				
 				break;
 			}
