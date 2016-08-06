@@ -24,22 +24,25 @@ public class GameEngine {
 		}
 		
 		NameGenerator names = new NameGenerator();
-		String playersShipName = names.getRandomName();
-		
+		String playersShipOneName = names.getRandomName();
+		String playersShipTwoName = names.getRandomName();
 		
 		
 		Player player = new Player(JOptionPane.showInputDialog("What is your name captain?"));
-		Ship playersShip = new Ship(player,playersShipName,new Point(0,0),null);
+		Ship playerShipOne = new Ship(player,playersShipOneName,new Point(0,0),null);
+		Ship playerShipTwo = new Ship(player,playersShipTwoName,new Point(0,0),null);
 		
-		player.setShip(playersShip);
-		gameModel.addShip(playersShip);
+		player.setShip(playerShipOne);
+		player.setShip(playerShipTwo);
+		gameModel.addShip(playerShipOne);
+		gameModel.addShip(playerShipTwo);
 		
 		gameModel.setKey("currPlayer", player);
 		gameModel.setKey("debug",debug);
 		
 		
 		if(gameModel.debugMode())System.out.println("Player " + gameModel.getCurrentPlayer().getName() + " created!");
-		if(gameModel.debugMode())System.out.println("Ship " + playersShip.getId() + " created for Player " + playersShip.getOwner().getName() + "!");
+		if(gameModel.debugMode())System.out.println("Ship " + playerShipOne.getId() + " created for Player " + playerShipOne.getOwner().getName() + "!");
 		
 		gameModel.addPlayer(player);
 		

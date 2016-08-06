@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Observable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Model extends Observable{
@@ -14,7 +15,7 @@ public class Model extends Observable{
  private ArrayList<Planet> planets;
  private ArrayList<Sun> suns;
  private ArrayList<Player> players;
- private ArrayList<Object[]> commands;
+ private CopyOnWriteArrayList<Object[]> commands;
  private int gridSize;
  
  public Model(){
@@ -24,7 +25,7 @@ public class Model extends Observable{
 	 planets = new ArrayList<Planet>();
 	 players = new ArrayList<Player>();
 	 suns = new ArrayList<Sun>();
-	 commands = new ArrayList<Object[]>();
+	 commands = new CopyOnWriteArrayList<Object[]>();
 	 topModel = new HashMap();
  }
 
@@ -52,14 +53,11 @@ public class Model extends Observable{
 	 notifyObservers(key);
 	 setChanged();
  }
- public Object[] getCurrentCommand(){
-	 return commands.get(0);
+ public CopyOnWriteArrayList<Object[]> getCommands(){
+	 return commands;
  }
- public void removeCurrentCommand(){
-	 if(commands.size()>0){
-		 commands.remove(0);
-		 if(debugMode())System.out.println("Command Removed!");
-	 }
+ public void removeCommand(Object[] command){
+	 commands.remove(command);
  }
  public Player getCurrentPlayer(){
 	 return (Player) topModel.get("currPlayer");

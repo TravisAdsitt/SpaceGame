@@ -82,6 +82,9 @@ public class Ship {
 			break;
 		}
 	}
+	public Object getFocusedObject(){
+		return focusedObject;
+	}
 	public ShipStates getState(){
 		return shipState;
 	}

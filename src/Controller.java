@@ -7,30 +7,27 @@ import javax.swing.Timer;
 
 public class Controller {
 	private Model gameModel;
-	private Object[] currCommand;
 
 	public Controller(Model gameModel){
 		this.gameModel = gameModel;
-		currCommand = null;
 		Timer tmr = new Timer(1000,new TickListener());
 		tmr.start();
 	}
 	public void game(){
-		if(gameModel.hasNextCommand() && currCommand == null){
-			currCommand = gameModel.getCurrentCommand();
-			if(gameModel.debugMode())System.out.println("Controller recieved the command " + ((Commands)currCommand[0]) + "!");
-			gameModel.removeCurrentCommand();
-		}else if(currCommand != null){
-			commandSection();
+		if(gameModel.hasNextCommand()){
+			
+			for(Object[] o : gameModel.getCommands()){
+				executeCommand(o);
+			}
 		}
 
 	}
-	public void commandSection(){
+	public void executeCommand(Object[] currCommand){
 		Commands commandString = null;
 
 		if(currCommand[0] instanceof Commands){
 			commandString = (Commands) currCommand[0];
-
+			if(gameModel.debugMode())System.out.println("Controller is executing the command " + ((Commands)currCommand[0]) + "!");
 			switch(commandString){
 			case MoveShip:
 				Point dest = (currCommand[1] instanceof Point)?(Point)currCommand[1]:null;
@@ -50,8 +47,8 @@ public class Controller {
 						
 					}else{
 						toMove.setState(ShipStates.IDLE);
-						currCommand = null;
 						gameModel.setKey("SHIPMOVECOMPLETE", toMove);
+						gameModel.removeCommand(currCommand);
 						if(gameModel.debugMode())System.out.println("Finished moving!");
 					}
 				}
