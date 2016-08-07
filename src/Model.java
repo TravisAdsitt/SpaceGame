@@ -104,15 +104,25 @@ public class Model extends Observable{
 	 }
  }
  public void addSector(Sector sector){
-	 universe.add(sector);
+	 if(!universe.contains(sector)){
+		 universe.add(sector);
+		 topModel.put("SECTOR" + sector.getId(), sector);
+	 }
+	 
  }
  public void addShip(Ship ship){
-	 ships.add(ship);
-	 topModel.put("SHIP" + ship.getId(), ship);
+	 if(!ships.contains(ship)){
+		 ships.add(ship);
+		 topModel.put("SHIP" + ship.getId(), ship);
+	 }
+	 
  }
  public void addSolarSystem(SolarSystem solarSystem){
-	 solarSystems.add(solarSystem);
-	 topModel.put("SOLARSYSTEM" + solarSystem.getId(), solarSystem);
+	 if(!solarSystems.contains(solarSystem)){
+		 solarSystems.add(solarSystem);
+		 topModel.put("SOLARSYSTEM" + solarSystem.getId(), solarSystem);
+	 }
+	 
  }
  public SolarSystem getSolarSystemByID(String id){
 	SolarSystem ret = null;

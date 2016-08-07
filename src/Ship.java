@@ -69,18 +69,20 @@ public class Ship {
 	}
 	public void setFocusedObject(Object focusedObject){
 		this.focusedObject = focusedObject;
-		
-		switch(focusedObject.getClass().getName()){
-		case "Planet":
-			shipState = ShipStates.ORBITING_PLANET;
-			break;
-		case "Sun":
-			shipState = ShipStates.ORBITING_SUN;
-			break;
-		default:
-			shipState = ShipStates.IDLE;
-			break;
+		if(this.focusedObject!=null){
+			switch(focusedObject.getClass().getName()){
+			case "Planet":
+				shipState = ShipStates.ORBITING_PLANET;
+				break;
+			case "Sun":
+				shipState = ShipStates.ORBITING_SUN;
+				break;
+			default:
+				shipState = ShipStates.IDLE;
+				break;
+			}
 		}
+		
 	}
 	public Object getFocusedObject(){
 		return focusedObject;

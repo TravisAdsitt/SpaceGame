@@ -41,7 +41,7 @@ public class GUI extends JPanel implements Observer{
 	private JLabel announcements;
 	private JPanel buttons;
 	private JPanel northPanel, southPanel, eastPanel, westPanel, centerPanel;
-	JButton mine, vac, takeoff, land, exitorbit, exitSystem;
+	private JButton mine, vac, takeoff, land, exitorbit, exitSystem;
 	private Model gameModel;
 	
 	public GUI(Model model){
@@ -98,6 +98,7 @@ public class GUI extends JPanel implements Observer{
 		shipList = new JList<String>(ships);
 		shipList.setFont(new Font("monospaced", Font.PLAIN, 12));
 		shipList.setSelectedIndex(0);
+		shipList.addListSelectionListener(new ShipListListener());
 		JScrollPane shipScroll = new JScrollPane();
 		shipScroll.add(shipList);
 		shipScroll.setPreferredSize(new Dimension(500,200));
@@ -158,49 +159,48 @@ public class GUI extends JPanel implements Observer{
 	 */
 	@SuppressWarnings("unchecked")
 	public void updateCommandButtonsPanel(){
-		Ship currShip = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex());
-		
-		switch(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getState()){
-		case IDLE:
-			buttons.removeAll();
-			if(currShip.getFocusedObject() instanceof SolarSystem){
-				buttons.add(exitSystem);
-			}
-			
-			break;
-		case ORBITING_PLANET:
-			buttons.removeAll();
-			buttons.add(land);
-			buttons.add(exitorbit);
-			break;
-		case ORBITING_SUN:
-			buttons.removeAll();
-			buttons.add(vac);
-			buttons.add(exitorbit);
-			break;
-		case LANDED:
-			buttons.removeAll();
-			buttons.add(takeoff);
-			buttons.add(mine);
-			buttons.add(vac);
-			break;
-		default:
-			buttons.removeAll();
-			break;
+	Ship currShip = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex());
+
+	switch(gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex()).getState()){
+	case IDLE:
+		buttons.removeAll();
+		if(currShip.getFocusedObject() instanceof SolarSystem){
+			buttons.add(exitSystem);
 		}
-		
-		
-		
+		break;
+	case ORBITING_PLANET:
+		buttons.removeAll();
+		buttons.add(land);
+		buttons.add(exitorbit);
+		break;
+	case ORBITING_SUN:
+		buttons.removeAll();
+		buttons.add(vac);
+		buttons.add(exitorbit);
+		break;
+	case LANDED:
+		buttons.removeAll();
+		buttons.add(takeoff);
+		buttons.add(mine);
+		buttons.add(vac);
+		break;
+	default:
+		buttons.removeAll();
+		break;
 	}
-	/**
-	 * Used to refresh the ship lists model if anything changed.
-	 */
-	private void refreshShipList(){
+
+
+}
+/**
+ * Used to refresh the ship lists model if anything changed.
+ */
+private void refreshShipList(){
 		DefaultListModel<String> ships = new DefaultListModel<String>();
 
 		for(Ship s : gameModel.getCurrentPlayer().getShips()){
 			ships.addElement(s.toString());
 		}
+		
 		int selection = shipList.getSelectedIndex();
 		shipList.setModel(ships);
 		shipList.setSelectedIndex(selection);
@@ -210,6 +210,7 @@ public class GUI extends JPanel implements Observer{
 	 */
 	public void refreshObjectList(){
 		DefaultListModel<String> objectListRefresh = new DefaultListModel<String>();
+		listObjects = new ArrayList<GameObject>();
 		Ship currShip = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex());
 		
 		if(currShip.getFocusedObject() != null){
@@ -219,10 +220,14 @@ public class GUI extends JPanel implements Observer{
 				
 				for(Sun s : systemSelected.getSuns()){
 					objectListRefresh.addElement(s.toString());
+					listObjects.add(s);
 				}
 				for(Planet p : systemSelected.getPlanets()){
 					objectListRefresh.addElement(p.toString());
+					listObjects.add(p);
 				}
+			}else if(currShip.getFocusedObject() instanceof Planet){
+				
 			}
 		}else if(currShip.getFocusedObject() == null){
 			
@@ -231,6 +236,7 @@ public class GUI extends JPanel implements Observer{
 				
 				for(SolarSystem s : currSector.getAllSolarSystems()){
 					objectListRefresh.addElement(s.id);
+					listObjects.add(s);
 				}
 				
 			}
@@ -238,6 +244,17 @@ public class GUI extends JPanel implements Observer{
 		}
 		
 		sectorObjectList.setModel(objectListRefresh);
+	}
+	private class ShipListListener implements ListSelectionListener{
+
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			if(shipList.getSelectedIndex() != -1){
+				updateCommandButtonsPanel();
+				refreshObjectList();
+			}
+		}
+		
 	}
 	/**
 	 * This is to listen for any changes on the objects in sector list. This may get more complicated in the future this is just for the beginning that it is so simplistic.
@@ -250,8 +267,10 @@ public class GUI extends JPanel implements Observer{
 		public void valueChanged(ListSelectionEvent event){
 			Ship currShip = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex());
 			
-			if(!(currShip.getFocusedObject() instanceof SolarSystem)){
-				currShip.setFocusedObject(gameModel.getSolarSystemByID(sectorObjectList.getSelectedValue()));
+			if(currShip.getFocusedObject() == null && sectorObjectList.getSelectedIndex() != -1){
+				
+				currShip.setFocusedObject(listObjects.get(sectorObjectList.getSelectedIndex()));
+				
 				refreshObjectList();
 				updateCommandButtonsPanel();
 			}
@@ -290,7 +309,8 @@ public class GUI extends JPanel implements Observer{
 				refreshObjectList();
 				break;
 			}
-
+			
+			updateCommandButtonsPanel();
 
 		}
 		

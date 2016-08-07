@@ -28,7 +28,7 @@ public class GameEngine {
 		String playersShipTwoName = names.getRandomName();
 		
 		
-		Player player = new Player(JOptionPane.showInputDialog("What is your name captain?"));
+		Player player = new Player((debug)?"DEBUGGER":JOptionPane.showInputDialog("What is your name captain?"));
 		Ship playerShipOne = new Ship(player,playersShipOneName,new Point(0,0),null);
 		Ship playerShipTwo = new Ship(player,playersShipTwoName,new Point(0,0),null);
 		
