@@ -1,10 +1,18 @@
-package GameStuff;
 
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+
+import javax.print.DocFlavor.READER;
 
 /**
  * 
@@ -36,9 +44,16 @@ public class NameGenerator {
 
 		try{
 			Scanner adjectiveScan = new Scanner(adjectiveFile);
+			String adjective;
+			
+			BufferedReader br = new BufferedReader(new FileReader(adjectiveFile));
+			
+			
 
-			while (adjectiveScan.hasNextLine()){
-				String adjective = adjectiveScan.nextLine();
+			
+			//System.out.println(adjectiveScan);
+			
+			while ((adjective = br.readLine()) != null){
 				if(!adjective.equals("")){
 					adjectiveArray.add(adjective);
 				}
@@ -47,6 +62,9 @@ public class NameGenerator {
 		}
 		catch (FileNotFoundException e) {
 			System.err.println("Failed to find adjective file :( " + e.getMessage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
 		}
 
 		/*for (String s: adjectiveArray){

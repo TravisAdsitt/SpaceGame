@@ -1,8 +1,9 @@
-package UI;
+
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -12,8 +13,6 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
-import GameStuff.Sector;
-import GameStuff.Ship;
 /**
  * This is to handle the drawing of the map and the highlighted squares.
  * 
@@ -33,10 +32,14 @@ public class MapView extends JPanel{
 	private ArrayList<Ship> ships;
 	private ArrayList<int[]> hCoor;
 	private boolean rightClicked;
+	private Model gameModel;
+	private ActionListener al;
 	
-	public MapView(Sector[][] mapData, ArrayList<Ship> ships){
-		this.mapData = mapData;
-		this.ships = ships;
+	public MapView(Model gameModel, ActionListener al){
+		this.gameModel = gameModel;
+		this.al = al;
+		this.mapData = gameModel.getUniverseSectorArray();
+		this.ships = gameModel.getCurrentPlayer().getShips();
 		
 		hCoor = new ArrayList<int[]>();
 		
@@ -55,38 +58,16 @@ public class MapView extends JPanel{
 		this.addMouseListener(new MouseMapListener());
 		
 	}
-	
-	/**
-	 * Get the highlighted squares x value.
-	 * 
-	 * @return highlighted squares x value.
-	 */
-	public int getHX(){
-		return hX;
-	}
-	/**
-	 * Get the highlighted squares y value.
-	 * 
-	 * @return highlighted squares y value.
-	 */
-	public int getHY(){
-		return hY;
-	}
 	/**
 	 * Returns an object with the coordinates of a command if there was a right click event on the map
 	 * @return int[] object with coordinates in it
 	 */
-	public int[] getComCoord(){
-		int[] ret = new int[2];
+	public Point getComCoord(){
+		Point ret = null;
 		
 		if(rightClicked){
-			ret[0] = getHX();
-			ret[1] = getHY();
-		}else{
-			ret[0] = -1;
-			ret[1] = -1;
+			ret = new Point(hX,hY);
 		}
-		
 		
 		hX = hY = -1;
 		rightClicked = false;
@@ -96,7 +77,7 @@ public class MapView extends JPanel{
 	/**
 	 * Used to refresh the highlighted squares on the map
 	 */
-	public synchronized void refreshHighlights(){
+	public void refreshHighlights(){
 		hCoor.clear();
 		
 		int[] coor = new int[3]; 
@@ -110,14 +91,15 @@ public class MapView extends JPanel{
 		for(Ship s : ships){
 			int[] sH = new int[3];
 			
-			sH[0] = s.getX();
-			sH[1] = s.getY();
+			
+			sH[0] = s.getCoor().x;
+			sH[1] = s.getCoor().y;
 			sH[2] = 1;
 			
 			hCoor.add(sH);
 		}
 		
-		
+		repaint();
 	}
 	public void update(ArrayList<Ship> ships){
 		this.ships = ships;
@@ -137,7 +119,7 @@ public class MapView extends JPanel{
 				
 				Random sectorRan = new Random(Integer.parseInt(x+""+y));
 				
-				int numStars = mapData[x/BLOCK_SIDE][y/BLOCK_SIDE].getNumSolarSystem();
+				int numStars = mapData[x/BLOCK_SIDE][y/BLOCK_SIDE].getAllSolarSystems().size();
 				
 				g.setColor(Color.black);
 				
@@ -174,36 +156,44 @@ public class MapView extends JPanel{
 	
 	private class MouseMapListener implements MouseListener{
 
-		public void mouseClicked(MouseEvent arg0) {
-			hX = (int) arg0.getPoint().getX()/BLOCK_SIDE;
-			hY = (int) arg0.getPoint().getY()/BLOCK_SIDE;
+		public void mouseClicked(MouseEvent event) {
+			hX = (int) event.getPoint().getX()/BLOCK_SIDE;
+			hY = (int) event.getPoint().getY()/BLOCK_SIDE;
 			
 			//System.out.println(mapData[hX][hY].getNumSolarSystem());
 			
-			switch(arg0.getButton()){
+			switch(event.getButton()){
 			case 3:
 				rightClicked = true;
+				if(gameModel.debugMode())System.out.println("Command action sent!");
+				al.actionPerformed(new ActionEvent("", 0, "Not sure what to put in here..."));
+				refreshHighlights();
+				repaint();
 				break;
 			}
 			
 			repaint();
 		}
 
+		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@Override
 		public void mousePressed(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			

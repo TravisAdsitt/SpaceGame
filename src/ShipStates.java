@@ -1,8 +1,9 @@
-package GameStuff;
+
 
 public enum ShipStates {
 	LANDED(true,true,false,false),
 	FLYING(false,false,true,false),
+	IDLE(false,false,true,false),
 	ORBITING_PLANET(false,true,true,true),
 	ORBITING_SUN(false,true,true,false);
 	
