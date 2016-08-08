@@ -29,7 +29,7 @@ public class Sun extends GameObject{
 		
 		String ret = null;
 		
-		ret += id;
+		ret = id;
 		
 		return ret;
 	}

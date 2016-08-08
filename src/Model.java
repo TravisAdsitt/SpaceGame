@@ -151,4 +151,15 @@ public class Model extends Observable{
 	 commands.add(command);
 	 
  }
+ public void addCommand(Commands commandEnum, Object obj1, Object obj2, int amount){
+	 Object[] command = new Object[4];
+	 
+	 command[0] = commandEnum;
+	 command[1] = obj1;
+	 command[2] = obj2;
+	 command[3] = amount;
+	 
+	 commands.add(command);
+	 
+ }
 }

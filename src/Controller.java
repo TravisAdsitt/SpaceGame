@@ -7,11 +7,14 @@ import javax.swing.Timer;
 
 public class Controller {
 	private Model gameModel;
+	private int tickCounter;
 
 	public Controller(Model gameModel){
 		this.gameModel = gameModel;
-		Timer tmr = new Timer(1000,new TickListener());
+		Timer tmr = new Timer(500,new TickListener());
 		tmr.start();
+		tickCounter = 0;
+		
 	}
 	public void game(){
 		if(gameModel.hasNextCommand()){
@@ -20,7 +23,19 @@ public class Controller {
 				executeCommand(o);
 			}
 		}
+		
+		Player me = gameModel.getCurrentPlayer();
+		
+		for(Ship s : me.getShips()){
+			s.update();
+		}
 
+		if(tickCounter++>4){
+			tickCounter = 0;
+			gameModel.setKey("UPDATESHIPLIST", me.getShips());
+		}
+		
+		
 	}
 	public void executeCommand(Object[] currCommand){
 		Commands commandString = null;
@@ -53,6 +68,20 @@ public class Controller {
 					}
 				}
 				break;
+			case Mine:
+				if(currCommand[2] instanceof Planet && currCommand[1] instanceof Ship){
+					
+					Planet miney = (Planet) currCommand[2];
+					Ship miner = (Ship) currCommand[1];
+					int amount = (int) currCommand[3];
+					
+					if(gameModel.debugMode())System.out.println("Mining amount:" + amount);
+					
+					mineOre(miner, miney, amount);
+					
+					gameModel.removeCommand(currCommand);
+					break;
+				}
 			}
 		}
 		
@@ -82,8 +111,27 @@ public class Controller {
 		//TODO write code to make a ship orbit a sun
 	}
 	
-	public void mineOre(Ship ship, Planet planet){
-		//TODO Write code to mine the planet
+	public void mineOre(Ship ship, Planet planet, int amount){
+		double density = planet.getDensity();
+		int totalOrePossible = planet.getOre();
+		
+		int minePow = ship.getMinePow();
+		int maxOre = ship.getMaxOre();
+		int currOre = ship.getOre();
+		
+		int amountMined = (minePow*density)>totalOrePossible?totalOrePossible:(int)(minePow*density);
+		amountMined = amountMined>amount?amount:amountMined;
+		
+		int additionsToShip = (amountMined + currOre)>maxOre?(maxOre-currOre):amountMined;
+		
+		planet.setOre(totalOrePossible - amountMined);
+		
+		ship.addOre(additionsToShip);
+		
+		if((amount - amountMined)>0){
+			gameModel.addCommand(Commands.Mine, ship, planet, (amount - amountMined));
+		}
+		
 	}
 	
 	public void mineOxygen(Ship ship, Planet planet){

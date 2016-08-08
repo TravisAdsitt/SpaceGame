@@ -46,6 +46,14 @@ public class Planet extends GameObject{
 		return hasAtmosphere;
 	}
 	/**
+	 * Set the amount of ore on the planet
+	 * 
+	 * @param amount
+	 */
+	public void setOre(int amount){
+		ore = amount;
+	}
+	/**
 	 * @return the ore
 	 */
 	public int getOre() {

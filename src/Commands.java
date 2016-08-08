@@ -1,5 +1,6 @@
 
 public enum Commands {
-	MoveShip;
-	
+	MoveShip,
+	Mine,
+	Vacuum;
 }

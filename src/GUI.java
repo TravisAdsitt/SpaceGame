@@ -267,12 +267,13 @@ private void refreshShipList(){
 		public void valueChanged(ListSelectionEvent event){
 			Ship currShip = gameModel.getCurrentPlayer().getShips().get(shipList.getSelectedIndex());
 			
-			if(currShip.getFocusedObject() == null && sectorObjectList.getSelectedIndex() != -1){
+			if(sectorObjectList.getSelectedIndex() != -1){
 				
 				currShip.setFocusedObject(listObjects.get(sectorObjectList.getSelectedIndex()));
 				
 				refreshObjectList();
 				updateCommandButtonsPanel();
+				
 			}
 		}
 	}
@@ -290,19 +291,22 @@ private void refreshShipList(){
 			
 			switch(event.getActionCommand()){
 			case"Land":
-				
+				currShip.land();
 				break;
 			case"Mine":
-
+				int amount = Integer.parseInt(JOptionPane.showInputDialog("How much?"));
+				
+				gameModel.addCommand(Commands.Mine, currShip, currShip.getFocusedObject(), amount);
 				break;
 			case"Take Off":
-				
+				currShip.takeOff();
 				break;
 			case"Vacuum":
 				
 				break;
 			case"Exit Orbit":
-				
+				currShip.setFocusedObject(((GameObject)currShip.getFocusedObject()).owner);
+				refreshObjectList();
 				break;
 			case"Exit System":
 				currShip.setFocusedObject(null);
@@ -347,7 +351,7 @@ private void refreshShipList(){
 	public void update(Observable arg0, Object arg1) {
 		String change = (arg1 instanceof String)?(String)arg1:null;
 		
-		if(gameModel.debugMode())System.out.println("Gui Knows you moved!");
+		if(gameModel.debugMode())System.out.println("Gui is doing something!");
 		
 		if(change!=null){
 			switch(change){
@@ -357,6 +361,9 @@ private void refreshShipList(){
 				break;
 			case"SHIPMOVECOMPLETE":
 				refreshObjectList();
+				break;
+			case"UPDATESHIPLIST":
+				refreshShipList();
 				break;
 			}
 		}

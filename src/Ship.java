@@ -5,7 +5,8 @@ public class Ship {
 
 	private Player owner;
 	private String id;
-	private final int MAX_DEFAULT_HYDROGEN = 10000, MAX_DEFAULT_OXYGEN = 1000, MAX_DEFAULT_ORE = 1000;
+	private final int MAX_DEFAULT_HYDROGEN = 10000, MAX_DEFAULT_OXYGEN = 1000, MAX_DEFAULT_ORE = 1000,
+			MAX_DEFAULT_MINEPOW = 20, MAX_DEFAULT_VACPOW = 20;
 	private int hydrogen, oxygen, ore, level, minePow, vacPow;
 	private ShipStates shipState;
 	private Object focusedObject;
@@ -18,7 +19,11 @@ public class Ship {
 		this.coor = coor;
 		dest = coor;
 		shipState = ShipStates.IDLE;
-		hydrogen = oxygen = ore = 0;
+		hydrogen = MAX_DEFAULT_HYDROGEN;
+		oxygen = MAX_DEFAULT_OXYGEN;
+		ore = 0;
+		minePow = MAX_DEFAULT_MINEPOW;
+		vacPow = MAX_DEFAULT_VACPOW;
 		level = 1;
 	}
 	
@@ -34,8 +39,8 @@ public class Ship {
 	public void update(){
 		switch(shipState){
 		case FLYING:
-			oxygen -= 100/level;
-			hydrogen -= 1000/level;
+			oxygen -= oxygen<=0?0:100/level;
+			hydrogen -= hydrogen<=0?0:1000/level;
 			break;
 		case LANDED:
 			if(focusedObject instanceof Planet){
@@ -84,11 +89,39 @@ public class Ship {
 		}
 		
 	}
+	public void land(){
+		if(focusedObject instanceof Planet){
+			shipState = ShipStates.LANDED;
+		}
+	}
+	public void takeOff(){
+		if(shipState.equals(ShipStates.LANDED)){
+			setFocusedObject(focusedObject);
+		}
+	}
 	public Object getFocusedObject(){
 		return focusedObject;
 	}
 	public ShipStates getState(){
 		return shipState;
+	}
+	public int getMinePow(){
+		return minePow;
+	}
+	public int getVacPow(){
+		return vacPow;
+	}
+	public int getMaxOre(){
+		return (MAX_DEFAULT_ORE * level);
+	}
+	public int getMaxOxygen(){
+		return (MAX_DEFAULT_OXYGEN * level);
+	}
+	public int getMaxHydrogen(){
+		return (MAX_DEFAULT_HYDROGEN * level);
+	}
+	public int getOre(){
+		return ore;
 	}
 	public String toString(){
 		String ret = "";
@@ -97,7 +130,8 @@ public class Ship {
 		
 		ret += "id = " + id + ", ";
 		ret += "state = " + shipState + ", ";
-		ret += "sector = " + coor.x + "," + coor.y + " ]";
+		ret += "sector = " + coor.x + "," + coor.y + ", ";
+		ret += "hyd = " + hydrogen + ", oxy = " + oxygen + ", ore = " + ore + " ]";
 		
 		return ret;
 	}
