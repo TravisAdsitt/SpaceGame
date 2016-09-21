@@ -14,28 +14,7 @@ public class GameEngine {
 
 	public static void main(String[] args){
 		int gridSize = 99;
-		boolean debug = false;
-		
-		/*
-		 * Stack overflow code 
-		 */
-		Logger logger = Logger.getLogger("MyLog");  
-	    FileHandler fh;  
-
-	    try {  
-
-	        fh = new FileHandler("MyLogFile.log");  
-	        logger.addHandler(fh);
-	        SimpleFormatter formatter = new SimpleFormatter();  
-	        fh.setFormatter(formatter);
-	        
-	        logger.info("Log started successfully!");
-
-	    } catch (SecurityException e) {  
-	        e.printStackTrace();  
-	    } catch (IOException e) {  
-	        e.printStackTrace();  
-	    }  
+		boolean debug = false; 
 	    
 	    JProgressBar jpb = new JProgressBar();
 	    jpb.setMinimum(0);
@@ -72,8 +51,6 @@ public class GameEngine {
 		
 		Player player = new Player((debug)?"DEBUGGER":JOptionPane.showInputDialog("What is your name captain?"));
 		
-		logger.info("New player created! Name : " + player.getName());
-		
 		/*
 		Ship playerShipOne = new Ship(player,playersShipOneName,new Point(0,0),null);
 		Ship playerShipTwo = new Ship(player,playersShipTwoName,new Point(0,0),null);
@@ -94,7 +71,6 @@ public class GameEngine {
 		
 		Controller gameControl = new Controller(gameModel);
 		//System.out.println(gameModel.getShipById(playersShipName).getClass().getName());
-		
 		JFrame gameWindow = new JFrame();
 		gameWindow.add(new GUI(gameModel));
 		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
